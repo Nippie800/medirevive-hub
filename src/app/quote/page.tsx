@@ -2,8 +2,10 @@
 
 import Link from "next/link";
 import { FormEvent, useState } from "react";
+import { useRouter } from "next/navigation";
 import { addDoc, collection, serverTimestamp } from "firebase/firestore";
-import { db } from "../../lib/firebase";
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import { db, storage } from "../../lib/firebase";
 
 type FormData = {
   fullName: string;
@@ -26,9 +28,11 @@ const initialForm: FormData = {
 };
 
 export default function QuotePage() {
+  const router = useRouter();
+
   const [form, setForm] = useState<FormData>(initialForm);
+  const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
-  const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
 
   function generateReference() {
@@ -36,14 +40,33 @@ export default function QuotePage() {
     return `MR-${new Date().getFullYear()}-${random}`;
   }
 
+  async function uploadImage(file: File, referenceCode: string) {
+    const fileExtension = file.name.split(".").pop() || "jpg";
+    const storageRef = ref(
+      storage,
+      `quote-uploads/${referenceCode}-${Date.now()}.${fileExtension}`
+    );
+
+    await uploadBytes(storageRef, file, {
+      contentType: file.type,
+    });
+
+    const downloadURL = await getDownloadURL(storageRef);
+    return downloadURL;
+  }
+
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setLoading(true);
-    setSuccessMessage("");
     setErrorMessage("");
 
     try {
       const reference = generateReference();
+      let imageUrl = "";
+
+      if (selectedImage) {
+        imageUrl = await uploadImage(selectedImage, reference);
+      }
 
       await addDoc(collection(db, "quoteRequests"), {
         reference,
@@ -54,14 +77,15 @@ export default function QuotePage() {
         itemType: form.itemType,
         description: form.description,
         consentToContact: form.consent,
+        imageUrl,
         status: "NEW",
         createdAt: serverTimestamp(),
       });
 
-      setSuccessMessage(
-        `Quote request sent successfully. Your reference number is ${reference}.`
-      );
       setForm(initialForm);
+      setSelectedImage(null);
+
+      router.push(`/quote/success?ref=${encodeURIComponent(reference)}`);
     } catch (error) {
       console.error("Error submitting quote request:", error);
       setErrorMessage("Something went wrong while sending your request.");
@@ -235,6 +259,29 @@ export default function QuotePage() {
             />
           </div>
 
+          <div>
+            <label
+              htmlFor="quoteImage"
+              className="mb-2 block text-sm font-medium text-slate-700"
+            >
+              Upload Image
+            </label>
+            <input
+              id="quoteImage"
+              name="quoteImage"
+              type="file"
+              accept="image/*"
+              onChange={(e) => {
+                const file = e.target.files?.[0] || null;
+                setSelectedImage(file);
+              }}
+              className="block w-full rounded-xl border border-slate-300 px-4 py-3 text-sm outline-none file:mr-4 file:rounded-lg file:border-0 file:bg-sky-700 file:px-4 file:py-2 file:font-medium file:text-white hover:file:bg-sky-800"
+            />
+            <p className="mt-2 text-sm text-slate-500">
+              Upload a photo of the equipment if available.
+            </p>
+          </div>
+
           <div className="flex items-start gap-3 rounded-xl bg-slate-50 px-4 py-4">
             <input
               id="consent"
@@ -259,12 +306,6 @@ export default function QuotePage() {
           >
             {loading ? "Sending..." : "Submit Quote Request"}
           </button>
-
-          {successMessage && (
-            <p className="rounded-xl bg-green-50 px-4 py-3 text-sm text-green-700">
-              {successMessage}
-            </p>
-          )}
 
           {errorMessage && (
             <p className="rounded-xl bg-red-50 px-4 py-3 text-sm text-red-700">

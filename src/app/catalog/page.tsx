@@ -1,39 +1,79 @@
-import Link from "next/link";
+"use client";
 
-const catalogItems = [
+import Link from "next/link";
+import { useMemo, useState } from "react";
+
+type CatalogCategory = "All" | "Beds" | "Chairs" | "Mobility" | "Tables" | "Custom";
+
+type CatalogItem = {
+  title: string;
+  description: string;
+  category: CatalogCategory;
+  image: string;
+};
+
+const categories: CatalogCategory[] = [
+  "All",
+  "Beds",
+  "Chairs",
+  "Mobility",
+  "Tables",
+  "Custom",
+];
+
+const catalogItems: CatalogItem[] = [
   {
     title: "Hospital Beds",
     description:
-      "Reupholstery and surface restoration for medical bedding and bed sections.",
+      "Reupholstery and restoration for worn medical bedding and hospital bed sections.",
+    category: "Beds",
+    image: "/catalog/hospital-bed.png",
   },
   {
     title: "Treatment Chairs",
     description:
-      "Refurbishment for worn chair surfaces used in clinics and treatment rooms.",
+      "Refurbishment for treatment and examination chairs used in healthcare environments.",
+    category: "Chairs",
+    image: "/catalog/treatment-chair.png",
   },
   {
     title: "Wheelchairs",
     description:
-      "Seat and cushion material replacement or restoration for patient mobility equipment.",
+      "Seat, cushion, and support restoration for patient mobility equipment.",
+    category: "Mobility",
+    image: "/catalog/wheelchair.png",
   },
   {
     title: "Medical Stools",
     description:
-      "Repairs and upholstery refreshes for stools used in healthcare spaces.",
+      "Repair and upholstery refreshes for stools used in consulting and treatment rooms.",
+    category: "Chairs",
+    image: "/catalog/medical-stool.png",
   },
   {
     title: "Examination Tables",
     description:
       "Professional re-covering and restoration for examination and therapy tables.",
+    category: "Tables",
+    image: "/catalog/exam-table.png",
   },
   {
     title: "Custom Medical Equipment",
     description:
-      "Specialized work on medical equipment requiring tailored upholstery solutions.",
+      "Tailored upholstery and refurbishment solutions for specialized medical equipment.",
+    category: "Custom",
+    image: "/catalog/custom-equipment.png",
   },
 ];
 
 export default function CatalogPage() {
+  const [activeCategory, setActiveCategory] = useState<CatalogCategory>("All");
+
+  const filteredItems = useMemo(() => {
+    if (activeCategory === "All") return catalogItems;
+    return catalogItems.filter((item) => item.category === activeCategory);
+  }, [activeCategory]);
+
   return (
     <main className="min-h-screen bg-slate-50 text-slate-900">
       <section className="border-b border-slate-200 bg-white">
@@ -68,22 +108,56 @@ export default function CatalogPage() {
             Services and equipment categories
           </h1>
           <p className="mt-4 text-slate-600">
-            Browse the types of medical bedding and equipment MediRevive can work on.
-            This catalog is designed to guide clients before they request a quote.
+            Browse the equipment types MediRevive can restore, repair, or reupholster.
           </p>
         </div>
 
+        <div className="mt-8 flex flex-wrap gap-3">
+          {categories.map((category) => {
+            const isActive = activeCategory === category;
+
+            return (
+              <button
+                key={category}
+                type="button"
+                onClick={() => setActiveCategory(category)}
+                className={`rounded-full px-4 py-2 text-sm font-medium transition ${
+                  isActive
+                    ? "bg-sky-700 text-white"
+                    : "bg-white text-slate-700 ring-1 ring-slate-200 hover:bg-slate-100"
+                }`}
+              >
+                {category}
+              </button>
+            );
+          })}
+        </div>
+
         <div className="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {catalogItems.map((item) => (
+          {filteredItems.map((item) => (
             <div
               key={item.title}
-              className="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-200"
+              className="overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-slate-200"
             >
-              <div className="mb-4 h-40 rounded-xl bg-slate-100" />
-              <h2 className="text-lg font-semibold">{item.title}</h2>
-              <p className="mt-2 text-sm leading-6 text-slate-600">
-                {item.description}
-              </p>
+             <div className="h-64 w-full bg-white p-4">
+  <div className="flex h-full w-full items-center justify-center rounded-2xl border border-slate-200 bg-white">
+    <img
+      src={item.image}
+      alt={item.title}
+      className="h-full w-full object-contain p-3"
+    />
+  </div>
+</div>
+
+              <div className="p-6">
+                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-sky-700">
+                  {item.category}
+                </p>
+                <h2 className="mt-2 text-lg font-semibold">{item.title}</h2>
+                <p className="mt-2 text-sm leading-6 text-slate-600">
+                  {item.description}
+                </p>
+              </div>
             </div>
           ))}
         </div>
@@ -91,7 +165,7 @@ export default function CatalogPage() {
         <div className="mt-12 rounded-3xl bg-sky-700 p-8 text-white">
           <h2 className="text-2xl font-bold">Need pricing for a specific item?</h2>
           <p className="mt-3 max-w-2xl text-sky-100">
-            Send MediRevive your item details and a short description of the work needed.
+            Send MediRevive your item details, photos, and a description of the work needed.
           </p>
           <Link
             href="/quote"
