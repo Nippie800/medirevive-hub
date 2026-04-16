@@ -1,4 +1,7 @@
+"use client";
+
 import Link from "next/link";
+import { useState } from "react";
 
 const aboutPoints = [
   "Treatment and professional furniture reupholstery",
@@ -45,49 +48,111 @@ const equipmentPreview = [
 ];
 
 export default function HomePage() {
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  function closeMobileMenu() {
+    setMobileMenuOpen(false);
+  }
+
   return (
     <main className="brand-shell">
       <section className="brand-container pt-6">
-        <header className="flex items-center justify-between rounded-2xl border border-white/10 bg-white/5 px-4 py-4 md:px-6">
-          <Link href="/" className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-[#11c5a147] bg-[#11c5a112] text-[#11c5a1]">
-              +
-            </div>
-            <span className="text-lg text-[var(--text)]">
-              <span className="font-medium">Medi</span>
-              <span className="text-[#11c5a1]">Revive</span>
-            </span>
-          </Link>
+        <header className="rounded-2xl border border-white/10 bg-white/5 px-4 py-4 md:px-6">
+          <div className="flex items-center justify-between gap-4">
+            <Link href="/" className="flex items-center gap-3" onClick={closeMobileMenu}>
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-[#11c5a147] bg-[#11c5a112] text-[#11c5a1]">
+                +
+              </div>
+              <span className="text-lg text-[var(--text)]">
+                <span className="font-medium">Medi</span>
+                <span className="text-[#11c5a1]">Revive</span>
+              </span>
+            </Link>
 
-          <nav className="hidden items-center gap-5 md:flex">
-            <Link
-              href="/catalog"
-              className="text-sm text-[var(--text-soft)] transition hover:text-white"
-            >
-              Equipment
-            </Link>
-            <Link
-              href="/quote"
-              className="text-sm text-[var(--text-soft)] transition hover:text-white"
-            >
-              Consultation
-            </Link>
-            <Link
-              href="/contact"
-              className="text-sm text-[var(--text-soft)] transition hover:text-white"
-            >
-              Contact
-            </Link>
-            <Link href="/admin" className="brand-button-primary">
-              Dashboard
-            </Link>
-          </nav>
+            <nav className="hidden items-center gap-5 md:flex">
+              <Link
+                href="/catalog"
+                className="text-sm text-[var(--text-soft)] transition hover:text-white"
+              >
+                Equipment
+              </Link>
+              <Link
+                href="/quote"
+                className="text-sm text-[var(--text-soft)] transition hover:text-white"
+              >
+                Consultation
+              </Link>
+              <Link
+                href="/contact"
+                className="text-sm text-[var(--text-soft)] transition hover:text-white"
+              >
+                Contact
+              </Link>
+              <Link href="/admin" className="brand-button-primary">
+                Dashboard
+              </Link>
+            </nav>
 
-          <div className="md:hidden">
-            <Link href="/quote" className="brand-button-primary text-sm">
-              Quote
-            </Link>
+            <button
+              type="button"
+              aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
+              onClick={() => setMobileMenuOpen((prev) => !prev)}
+              className="flex h-11 w-11 items-center justify-center rounded-xl border border-white/10 bg-white/5 text-[var(--text)] transition hover:bg-white/10 md:hidden"
+            >
+              <span className="relative block h-5 w-5">
+                <span
+                  className={`absolute left-0 top-0 block h-0.5 w-5 bg-current transition-all duration-200 ${
+                    mobileMenuOpen ? "top-2 rotate-45" : ""
+                  }`}
+                />
+                <span
+                  className={`absolute left-0 top-2 block h-0.5 w-5 bg-current transition-all duration-200 ${
+                    mobileMenuOpen ? "opacity-0" : "opacity-100"
+                  }`}
+                />
+                <span
+                  className={`absolute left-0 top-4 block h-0.5 w-5 bg-current transition-all duration-200 ${
+                    mobileMenuOpen ? "top-2 -rotate-45" : ""
+                  }`}
+                />
+              </span>
+            </button>
           </div>
+
+          {mobileMenuOpen ? (
+            <div className="mt-4 border-t border-white/10 pt-4 md:hidden">
+              <nav className="flex flex-col gap-3">
+                <Link
+                  href="/catalog"
+                  onClick={closeMobileMenu}
+                  className="rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm font-medium text-[var(--text-soft)] transition hover:bg-white/10 hover:text-white"
+                >
+                  Equipment
+                </Link>
+                <Link
+                  href="/quote"
+                  onClick={closeMobileMenu}
+                  className="rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm font-medium text-[var(--text-soft)] transition hover:bg-white/10 hover:text-white"
+                >
+                  Consultation
+                </Link>
+                <Link
+                  href="/contact"
+                  onClick={closeMobileMenu}
+                  className="rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm font-medium text-[var(--text-soft)] transition hover:bg-white/10 hover:text-white"
+                >
+                  Contact
+                </Link>
+                <Link
+                  href="/admin"
+                  onClick={closeMobileMenu}
+                  className="brand-button-primary w-full"
+                >
+                  Dashboard
+                </Link>
+              </nav>
+            </div>
+          ) : null}
         </header>
       </section>
 
