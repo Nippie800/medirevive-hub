@@ -1,26 +1,300 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #0d1722;
+  --background-soft: #111f2c;
+  --panel: rgba(255, 255, 255, 0.04);
+  --panel-strong: rgba(255, 255, 255, 0.06);
+  --border: rgba(255, 255, 255, 0.1);
+
+  --text: #f3efe7;
+  --text-soft: #9fb0c2;
+  --text-muted: #7f90a3;
+
+  --teal: #11c5a1;
+  --teal-soft: rgba(17, 197, 161, 0.12);
+
+  --linen: #d8c09a;
+  --linen-soft: #f2e6d6;
+
+  --danger: #ff6b6b;
+  --success: #18c38f;
+
+  --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.28);
+  --shadow-md: 0 12px 30px rgba(0, 0, 0, 0.22);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+* {
+  box-sizing: border-box;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  scroll-behavior: smooth;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  margin: 0;
+  background:
+    linear-gradient(to right, rgba(255,255,255,0.04) 1px, transparent 1px),
+    linear-gradient(180deg, #0b1520 0%, #0d1722 100%);
+  background-size: 340px 100%, 100% 100%;
+  color: var(--text);
+  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-serif), Georgia, serif;
+  letter-spacing: -0.03em;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+::selection {
+  background: rgba(17, 197, 161, 0.25);
+}
+
+.brand-shell {
+  min-height: 100vh;
+  color: var(--text);
+}
+
+.brand-container {
+  width: 100%;
+  max-width: 1240px;
+  margin: 0 auto;
+  padding-left: 24px;
+  padding-right: 24px;
+}
+
+.brand-section {
+  padding-top: 88px;
+  padding-bottom: 88px;
+}
+
+.brand-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 12px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--teal);
+}
+
+.brand-kicker::before {
+  content: "";
+  width: 22px;
+  height: 1px;
+  background: var(--teal);
+  display: inline-block;
+}
+
+.brand-title-xl {
+  font-size: clamp(3rem, 7vw, 5.8rem);
+  line-height: 0.96;
+  max-width: 8ch;
+}
+
+.brand-title-lg {
+  font-size: clamp(2.2rem, 5vw, 4rem);
+  line-height: 1.02;
+  max-width: 11ch;
+}
+
+.brand-body {
+  font-size: 1.125rem;
+  line-height: 1.8;
+  color: var(--text-soft);
+  max-width: 680px;
+}
+
+.brand-panel {
+  background: linear-gradient(
+    180deg,
+    rgba(255,255,255,0.05) 0%,
+    rgba(255,255,255,0.03) 100%
+  );
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  box-shadow: var(--shadow-md);
+  -webkit-backdrop-filter: blur(8px);
+backdrop-filter: blur(8px);
+}
+
+.brand-panel-soft {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+}
+
+.brand-button-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 52px;
+  padding: 0 22px;
+  border-radius: 14px;
+  background: var(--teal-soft);
+  border: 1px solid rgba(17, 197, 161, 0.28);
+  color: var(--teal);
+  font-weight: 600;
+  transition: 160ms ease;
+}
+
+.brand-button-primary:hover {
+  transform: translateY(-1px);
+  background: rgba(17, 197, 161, 0.18);
+}
+
+.brand-button-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 52px;
+  padding: 0 22px;
+  border-radius: 14px;
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-weight: 600;
+  transition: 160ms ease;
+}
+
+.brand-button-secondary:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.brand-card {
+  overflow: hidden;
+  border-radius: 22px;
+  border: 1px solid var(--border);
+  background: linear-gradient(
+    180deg,
+    rgba(255,255,255,0.04) 0%,
+    rgba(255,255,255,0.02) 100%
+  );
+}
+
+.brand-card-visual {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 220px;
+  padding: 28px;
+  border-bottom: 1px solid var(--border);
+  background: linear-gradient(
+    90deg,
+    rgba(17,197,161,0.08) 0%,
+    rgba(255,255,255,0.03) 100%
+  );
+}
+
+.brand-card-body {
+  padding: 22px;
+}
+
+.brand-badge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 32px;
+  padding: 0 14px;
+  border-radius: 999px;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border: 1px solid rgba(17, 197, 161, 0.28);
+  color: var(--teal);
+  background: rgba(17, 197, 161, 0.08);
+}
+
+.brand-badge-warm {
+  border: 1px solid rgba(216, 192, 154, 0.3);
+  color: var(--linen);
+  background: rgba(216, 192, 154, 0.08);
+}
+
+.brand-stat {
+  padding: 22px;
+  border-radius: 18px;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.brand-stat-number {
+  font-family: var(--font-serif), Georgia, serif;
+  font-size: 2rem;
+  line-height: 1;
+}
+
+.brand-input,
+.brand-textarea,
+.brand-select {
+  width: 100%;
+  border-radius: 16px;
+  border: 1px solid var(--border);
+  background: rgba(255,255,255,0.03);
+  color: var(--text);
+  padding: 15px 16px;
+  outline: none;
+  transition: 160ms ease;
+}
+
+.brand-input::placeholder,
+.brand-textarea::placeholder {
+  color: var(--text-muted);
+}
+
+.brand-input:focus,
+.brand-textarea:focus,
+.brand-select:focus {
+  border-color: rgba(17, 197, 161, 0.5);
+  box-shadow: 0 0 0 3px rgba(17, 197, 161, 0.12);
+}
+
+.brand-divider {
+  height: 1px;
+  width: 100%;
+  background: var(--border);
+}
+
+.brand-mobile-frame {
+  border-radius: 36px;
+  overflow: hidden;
+  border: 12px solid #0c1117;
+  box-shadow: 0 30px 80px rgba(0,0,0,0.35);
+  background: #0c1117;
+}
+
+@media (max-width: 768px) {
+  body {
+    background-size: 180px 100%, 100% 100%;
+  }
+
+  .brand-section {
+    padding-top: 64px;
+    padding-bottom: 64px;
+  }
+
+  .brand-title-xl {
+    max-width: 9ch;
+  }
+
+  .brand-title-lg {
+    max-width: 12ch;
+  }
 }

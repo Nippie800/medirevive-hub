@@ -39,6 +39,13 @@ const statusOptions: QuoteRequest["status"][] = [
   "COMPLETED",
 ];
 
+const statusLabels: Record<QuoteRequest["status"], string> = {
+  NEW: "New Intake",
+  IN_REVIEW: "Assessment",
+  QUOTED: "Awaiting Approval",
+  COMPLETED: "Restored",
+};
+
 export default function AdminPage() {
   const router = useRouter();
 
@@ -112,7 +119,7 @@ export default function AdminPage() {
       },
       (error) => {
         console.error(error);
-        setErrorMessage("Failed to load quote requests.");
+        setErrorMessage("Failed to load consultations.");
         setLoading(false);
       }
     );
@@ -168,7 +175,7 @@ export default function AdminPage() {
       });
     } catch (error) {
       console.error(error);
-      setErrorMessage("Failed to update status.");
+      setErrorMessage("Failed to update restoration stage.");
     } finally {
       setUpdatingId(null);
     }
@@ -181,286 +188,293 @@ export default function AdminPage() {
 
   if (authLoading) {
     return (
-      <main className="min-h-screen bg-slate-50 px-6 py-16 text-slate-900">
-        <div className="mx-auto max-w-7xl rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-200">
-          Checking access...
-        </div>
+      <main className="brand-shell">
+        <section className="brand-container py-16">
+          <div className="brand-panel p-6">
+            <p className="text-[var(--text-soft)]">Checking access...</p>
+          </div>
+        </section>
       </main>
     );
   }
 
   return (
-    <main className="min-h-screen bg-slate-50 text-slate-900">
-      <section className="border-b border-slate-200 bg-white">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-5">
-          <Link href="/" className="text-xl font-bold tracking-tight text-sky-800">
-            MediRevive
+    <main className="brand-shell">
+      <section className="brand-container pt-6">
+        <header className="flex flex-col gap-4 rounded-2xl border border-white/10 bg-white/5 px-4 py-4 md:flex-row md:items-center md:justify-between md:px-6">
+          <Link href="/" className="flex items-center gap-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-[#11c5a147] bg-[#11c5a112] text-[#11c5a1]">
+              +
+            </div>
+            <span className="text-lg text-[var(--text)]">
+              <span className="font-medium">Medi</span>
+              <span className="text-[#11c5a1]">Revive</span>
+            </span>
           </Link>
 
-          <div className="flex items-center gap-3">
-            <p className="hidden text-sm text-slate-500 md:block">
-              {user?.email}
-            </p>
+          <div className="flex flex-wrap items-center gap-3">
+            <p className="text-sm text-[var(--text-soft)]">{user?.email}</p>
             <button
               type="button"
               onClick={handleLogout}
-              className="rounded-lg border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-100"
+              className="brand-button-secondary"
             >
-              Log Out
+              Log out
             </button>
           </div>
-        </div>
+        </header>
       </section>
 
-      <section className="mx-auto max-w-7xl px-6 py-10">
-        <div className="mb-8">
-          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-sky-700">
-            Admin Dashboard
-          </p>
-          <h1 className="mt-2 text-3xl font-bold tracking-tight">
-            Quote requests
-          </h1>
-          <p className="mt-2 text-slate-600">
-            View incoming requests, inspect images, search records, and update statuses.
-          </p>
-        </div>
-
-        <div className="mb-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
-          <div className="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
-            <p className="text-sm text-slate-500">All Requests</p>
-            <p className="mt-2 text-3xl font-bold">{counts.ALL}</p>
-          </div>
-          <div className="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
-            <p className="text-sm text-slate-500">New</p>
-            <p className="mt-2 text-3xl font-bold">{counts.NEW}</p>
-          </div>
-          <div className="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
-            <p className="text-sm text-slate-500">In Review</p>
-            <p className="mt-2 text-3xl font-bold">{counts.IN_REVIEW}</p>
-          </div>
-          <div className="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
-            <p className="text-sm text-slate-500">Quoted</p>
-            <p className="mt-2 text-3xl font-bold">{counts.QUOTED}</p>
-          </div>
-          <div className="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
-            <p className="text-sm text-slate-500">Completed</p>
-            <p className="mt-2 text-3xl font-bold">{counts.COMPLETED}</p>
-          </div>
-        </div>
-
-        <div className="mb-6 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-          <div className="flex flex-wrap gap-3">
-            {(["ALL", ...statusOptions] as const).map((status) => {
-              const isActive = activeFilter === status;
-              const countValue = counts[status];
-
-              return (
-                <button
-                  key={status}
-                  type="button"
-                  onClick={() => setActiveFilter(status)}
-                  className={`rounded-full px-4 py-2 text-sm font-medium transition ${
-                    isActive
-                      ? "bg-sky-700 text-white"
-                      : "bg-white text-slate-700 ring-1 ring-slate-200 hover:bg-slate-100"
-                  }`}
-                >
-                  {status} ({countValue})
-                </button>
-              );
-            })}
+      <section className="brand-section">
+        <div className="brand-container">
+          <div className="mb-10">
+            <span className="brand-kicker">Internal dashboard</span>
+            <h1 className="brand-title-lg mt-5">Lead tracker & restoration pipeline.</h1>
+            <p className="brand-body mt-6">
+              View consultations, inspect uploaded equipment images, and move each
+              client through assessment, quoting, and restoration.
+            </p>
           </div>
 
-          <div className="w-full lg:max-w-sm">
-            <input
-              type="text"
-              placeholder="Search by reference, name, email, or item..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full rounded-xl border border-slate-300 px-4 py-3 outline-none focus:border-sky-500"
-            />
+          <div className="mb-8 grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
+            <div className="brand-stat">
+              <p className="text-sm text-[var(--text-soft)]">All consultations</p>
+              <p className="brand-stat-number mt-3">{counts.ALL}</p>
+            </div>
+            <div className="brand-stat">
+              <p className="text-sm text-[var(--text-soft)]">New intake</p>
+              <p className="brand-stat-number mt-3">{counts.NEW}</p>
+            </div>
+            <div className="brand-stat">
+              <p className="text-sm text-[var(--text-soft)]">Assessment</p>
+              <p className="brand-stat-number mt-3">{counts.IN_REVIEW}</p>
+            </div>
+            <div className="brand-stat">
+              <p className="text-sm text-[var(--text-soft)]">Awaiting approval</p>
+              <p className="brand-stat-number mt-3">{counts.QUOTED}</p>
+            </div>
+            <div className="brand-stat">
+              <p className="text-sm text-[var(--text-soft)]">Restored</p>
+              <p className="brand-stat-number mt-3">{counts.COMPLETED}</p>
+            </div>
           </div>
-        </div>
 
-        {errorMessage ? (
-          <div className="mb-6 rounded-xl bg-red-50 px-4 py-3 text-sm text-red-700">
-            {errorMessage}
-          </div>
-        ) : null}
+          <div className="mb-8 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+            <div className="flex flex-wrap gap-3">
+              {(["ALL", ...statusOptions] as const).map((status) => {
+                const isActive = activeFilter === status;
+                const countValue = counts[status];
 
-        <div className="grid gap-6 lg:grid-cols-[380px_1fr]">
-          <div className="rounded-2xl bg-white shadow-sm ring-1 ring-slate-200">
-            <div className="border-b border-slate-200 px-5 py-4">
-              <h2 className="font-semibold">Request list</h2>
+                return (
+                  <button
+                    key={status}
+                    type="button"
+                    onClick={() => setActiveFilter(status)}
+                    className={
+                      isActive
+                        ? "brand-button-primary min-h-0 px-4 py-2 text-sm"
+                        : "rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm font-medium text-[var(--text-soft)] transition hover:bg-white/10 hover:text-white"
+                    }
+                  >
+                    {status === "ALL" ? "All" : statusLabels[status]} ({countValue})
+                  </button>
+                );
+              })}
             </div>
 
-            <div className="max-h-[70vh] overflow-y-auto">
-              {loading ? (
-                <div className="p-5 text-sm text-slate-500">Loading requests...</div>
-              ) : filteredRequests.length === 0 ? (
-                <div className="p-5 text-sm text-slate-500">No matching requests found.</div>
-              ) : (
-                filteredRequests.map((request) => {
-                  const isSelected = selectedRequest?.id === request.id;
+            <div className="w-full lg:max-w-sm">
+              <input
+                type="text"
+                placeholder="Search by reference, name, email, or item..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="brand-input"
+              />
+            </div>
+          </div>
 
-                  return (
-                    <button
-                      key={request.id}
-                      type="button"
-                      onClick={() => setSelectedRequest(request)}
-                      className={`w-full border-b border-slate-100 px-5 py-4 text-left transition hover:bg-slate-50 ${
-                        isSelected ? "bg-sky-50" : "bg-white"
-                      }`}
-                    >
-                      <div className="flex items-start justify-between gap-3">
-                        <div>
-                          <p className="text-sm font-semibold text-slate-900">
-                            {request.reference}
-                          </p>
-                          <p className="mt-1 text-sm text-slate-600">
-                            {request.fullName}
-                          </p>
-                          <p className="mt-1 text-xs text-slate-500">
-                            {request.itemType}
-                          </p>
+          {errorMessage ? (
+            <div className="mb-6 rounded-2xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm text-red-200">
+              {errorMessage}
+            </div>
+          ) : null}
+
+          <div className="grid gap-6 xl:grid-cols-[360px_1fr]">
+            <div className="brand-panel overflow-hidden p-0">
+              <div className="border-b border-white/10 px-5 py-4">
+                <h2 className="text-2xl">Consultation queue</h2>
+              </div>
+
+              <div className="max-h-[72vh] overflow-y-auto">
+                {loading ? (
+                  <div className="p-5 text-sm text-[var(--text-soft)]">
+                    Loading consultations...
+                  </div>
+                ) : filteredRequests.length === 0 ? (
+                  <div className="p-5 text-sm text-[var(--text-soft)]">
+                    No matching consultations found.
+                  </div>
+                ) : (
+                  filteredRequests.map((request) => {
+                    const isSelected = selectedRequest?.id === request.id;
+
+                    return (
+                      <button
+                        key={request.id}
+                        type="button"
+                        onClick={() => setSelectedRequest(request)}
+                        className={`w-full border-b border-white/10 px-5 py-4 text-left transition ${
+                          isSelected ? "bg-white/10" : "bg-transparent hover:bg-white/5"
+                        }`}
+                      >
+                        <div className="flex items-start justify-between gap-3">
+                          <div className="min-w-0">
+                            <p className="text-sm font-semibold text-[var(--text)]">
+                              {request.reference}
+                            </p>
+                            <p className="mt-1 truncate text-sm text-[var(--text-soft)]">
+                              {request.fullName}
+                            </p>
+                            <p className="mt-1 truncate text-xs text-[var(--text-muted)]">
+                              {request.itemType}
+                            </p>
+                          </div>
+
+                          <span className="brand-badge whitespace-nowrap">
+                            {statusLabels[request.status]}
+                          </span>
                         </div>
+                      </button>
+                    );
+                  })
+                )}
+              </div>
+            </div>
 
-                        <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-700">
-                          {request.status}
-                        </span>
+            <div className="brand-panel p-6">
+              {!selectedRequest ? (
+                <div className="text-sm text-[var(--text-soft)]">
+                  Select a consultation to view details.
+                </div>
+              ) : (
+                <div className="space-y-6">
+                  <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
+                    <div>
+                      <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[var(--teal)]">
+                        {selectedRequest.reference}
+                      </p>
+                      <h2 className="mt-3 text-4xl">{selectedRequest.fullName}</h2>
+                      <p className="mt-3 text-sm text-[var(--text-soft)]">
+                        Submitted {formatDate(selectedRequest.createdAt?.seconds)}
+                      </p>
+                    </div>
+
+                    <div className="w-full max-w-xs">
+                      <label
+                        htmlFor="status"
+                        className="mb-2 block text-sm font-medium text-[var(--text-soft)]"
+                      >
+                        Restoration stage
+                      </label>
+                      <select
+                        id="status"
+                        value={selectedRequest.status}
+                        disabled={updatingId === selectedRequest.id}
+                        onChange={(e) =>
+                          handleStatusChange(
+                            selectedRequest.id,
+                            e.target.value as QuoteRequest["status"]
+                          )
+                        }
+                        className="brand-select"
+                      >
+                        {statusOptions.map((status) => (
+                          <option key={status} value={status}>
+                            {statusLabels[status]}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+
+                  <div className="grid gap-4 md:grid-cols-2">
+                    <div className="brand-panel-soft p-4">
+                      <p className="text-xs uppercase tracking-[0.18em] text-[var(--text-muted)]">
+                        Email
+                      </p>
+                      <p className="mt-2 text-sm text-[var(--text)]">
+                        {selectedRequest.email}
+                      </p>
+                    </div>
+
+                    <div className="brand-panel-soft p-4">
+                      <p className="text-xs uppercase tracking-[0.18em] text-[var(--text-muted)]">
+                        Phone
+                      </p>
+                      <p className="mt-2 text-sm text-[var(--text)]">
+                        {selectedRequest.phone}
+                      </p>
+                    </div>
+
+                    <div className="brand-panel-soft p-4">
+                      <p className="text-xs uppercase tracking-[0.18em] text-[var(--text-muted)]">
+                        Service needed
+                      </p>
+                      <p className="mt-2 text-sm text-[var(--text)]">
+                        {selectedRequest.serviceType}
+                      </p>
+                    </div>
+
+                    <div className="brand-panel-soft p-4">
+                      <p className="text-xs uppercase tracking-[0.18em] text-[var(--text-muted)]">
+                        Equipment type
+                      </p>
+                      <p className="mt-2 text-sm text-[var(--text)]">
+                        {selectedRequest.itemType}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="brand-panel-soft p-4">
+                    <p className="text-xs uppercase tracking-[0.18em] text-[var(--text-muted)]">
+                      Consultation notes
+                    </p>
+                    <p className="mt-2 text-sm leading-7 text-[var(--text)]">
+                      {selectedRequest.description}
+                    </p>
+                  </div>
+
+                  <div className="brand-panel-soft p-4">
+                    <p className="text-xs uppercase tracking-[0.18em] text-[var(--text-muted)]">
+                      Consent to contact
+                    </p>
+                    <p className="mt-2 text-sm text-[var(--text)]">
+                      {selectedRequest.consentToContact ? "Yes" : "No"}
+                    </p>
+                  </div>
+
+                  <div>
+                    <p className="mb-3 text-xs uppercase tracking-[0.18em] text-[var(--text-muted)]">
+                      Uploaded image
+                    </p>
+
+                    {selectedRequest.imageUrl ? (
+                      <div className="overflow-hidden rounded-2xl border border-white/10 bg-white p-4">
+                        <img
+                          src={selectedRequest.imageUrl}
+                          alt={`${selectedRequest.itemType} upload`}
+                          className="max-h-[460px] w-full object-contain"
+                        />
                       </div>
-                    </button>
-                  );
-                })
+                    ) : (
+                      <div className="brand-panel-soft p-4 text-sm text-[var(--text-soft)]">
+                        No image uploaded.
+                      </div>
+                    )}
+                  </div>
+                </div>
               )}
             </div>
-          </div>
-
-          <div className="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-200">
-            {!selectedRequest ? (
-              <div className="text-sm text-slate-500">
-                Select a request to view details.
-              </div>
-            ) : (
-              <div className="space-y-6">
-                <div className="flex flex-wrap items-start justify-between gap-4">
-                  <div>
-                    <p className="text-sm font-semibold uppercase tracking-[0.18em] text-sky-700">
-                      {selectedRequest.reference}
-                    </p>
-                    <h2 className="mt-2 text-2xl font-bold">
-                      {selectedRequest.fullName}
-                    </h2>
-                    <p className="mt-2 text-sm text-slate-500">
-                      Submitted {formatDate(selectedRequest.createdAt?.seconds)}
-                    </p>
-                  </div>
-
-                  <div className="min-w-[220px]">
-                    <label
-                      htmlFor="status"
-                      className="mb-2 block text-sm font-medium text-slate-700"
-                    >
-                      Update Status
-                    </label>
-                    <select
-                      id="status"
-                      value={selectedRequest.status}
-                      disabled={updatingId === selectedRequest.id}
-                      onChange={(e) =>
-                        handleStatusChange(
-                          selectedRequest.id,
-                          e.target.value as QuoteRequest["status"]
-                        )
-                      }
-                      className="w-full rounded-xl border border-slate-300 px-4 py-3 outline-none focus:border-sky-500"
-                    >
-                      {statusOptions.map((status) => (
-                        <option key={status} value={status}>
-                          {status}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                </div>
-
-                <div className="grid gap-4 md:grid-cols-2">
-                  <div className="rounded-xl bg-slate-50 p-4">
-                    <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
-                      Email
-                    </p>
-                    <p className="mt-2 text-sm text-slate-800">
-                      {selectedRequest.email}
-                    </p>
-                  </div>
-
-                  <div className="rounded-xl bg-slate-50 p-4">
-                    <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
-                      Phone
-                    </p>
-                    <p className="mt-2 text-sm text-slate-800">
-                      {selectedRequest.phone}
-                    </p>
-                  </div>
-
-                  <div className="rounded-xl bg-slate-50 p-4">
-                    <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
-                      Service Type
-                    </p>
-                    <p className="mt-2 text-sm text-slate-800">
-                      {selectedRequest.serviceType}
-                    </p>
-                  </div>
-
-                  <div className="rounded-xl bg-slate-50 p-4">
-                    <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
-                      Item Type
-                    </p>
-                    <p className="mt-2 text-sm text-slate-800">
-                      {selectedRequest.itemType}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="rounded-xl bg-slate-50 p-4">
-                  <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
-                    Description
-                  </p>
-                  <p className="mt-2 text-sm leading-6 text-slate-800">
-                    {selectedRequest.description}
-                  </p>
-                </div>
-
-                <div className="rounded-xl bg-slate-50 p-4">
-                  <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
-                    Consent to Contact
-                  </p>
-                  <p className="mt-2 text-sm text-slate-800">
-                    {selectedRequest.consentToContact ? "Yes" : "No"}
-                  </p>
-                </div>
-
-                <div>
-                  <p className="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
-                    Uploaded Image
-                  </p>
-
-                  {selectedRequest.imageUrl ? (
-                    <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white">
-                      <img
-                        src={selectedRequest.imageUrl}
-                        alt={`${selectedRequest.itemType} upload`}
-                        className="max-h-[420px] w-full object-contain bg-white"
-                      />
-                    </div>
-                  ) : (
-                    <div className="rounded-xl bg-slate-50 p-4 text-sm text-slate-500">
-                      No image uploaded.
-                    </div>
-                  )}
-                </div>
-              </div>
-            )}
           </div>
         </div>
       </section>

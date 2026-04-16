@@ -3,176 +3,218 @@
 import Link from "next/link";
 import { useMemo, useState } from "react";
 
-type CatalogCategory = "All" | "Beds" | "Chairs" | "Mobility" | "Tables" | "Custom";
+type EquipmentCategory =
+  | "All"
+  | "Plinths & Beds"
+  | "Chairs & Seating"
+  | "Professional Furniture"
+  | "Accessories"
+  | "Custom";
 
-type CatalogItem = {
+type EquipmentItem = {
   title: string;
   description: string;
-  category: CatalogCategory;
+  category: EquipmentCategory;
   image: string;
+  tag: string;
 };
 
-const categories: CatalogCategory[] = [
+const categories: EquipmentCategory[] = [
   "All",
-  "Beds",
-  "Chairs",
-  "Mobility",
-  "Tables",
+  "Plinths & Beds",
+  "Chairs & Seating",
+  "Professional Furniture",
+  "Accessories",
   "Custom",
 ];
 
-const catalogItems: CatalogItem[] = [
+const equipmentItems: EquipmentItem[] = [
   {
-    title: "Hospital Beds",
+    title: "Treatment Beds & Plinths",
     description:
-      "Reupholstery and restoration for worn medical bedding and hospital bed sections.",
-    category: "Beds",
+      "Electrical plinths, standard plinths, bobath plinths, portable plinths, chiropractic beds, and traction beds.",
+    category: "Plinths & Beds",
     image: "/catalog/hospital-bed.png",
+    tag: "Core category",
   },
   {
     title: "Treatment Chairs",
     description:
-      "Refurbishment for treatment and examination chairs used in healthcare environments.",
-    category: "Chairs",
+      "Professional reupholstery and restoration for treatment chairs, therapy chairs, and specialist seating.",
+    category: "Chairs & Seating",
     image: "/catalog/treatment-chair.png",
+    tag: "Professional use",
   },
   {
-    title: "Wheelchairs",
+    title: "Wheelchairs & Mobility Seating",
     description:
-      "Seat, cushion, and support restoration for patient mobility equipment.",
-    category: "Mobility",
+      "Seat, cushion, and support restoration where required for comfort, hygiene, and a cleaner finish.",
+    category: "Chairs & Seating",
     image: "/catalog/wheelchair.png",
+    tag: "Assessment needed",
   },
   {
-    title: "Medical Stools",
+    title: "Round & Saddle Stools",
     description:
-      "Repair and upholstery refreshes for stools used in consulting and treatment rooms.",
-    category: "Chairs",
+      "Round stools, saddle chairs, and other support seating reupholstered for durability and professional presentation.",
+    category: "Chairs & Seating",
     image: "/catalog/medical-stool.png",
+    tag: "Workshop repair",
   },
   {
-    title: "Examination Tables",
+    title: "Examination & Consultation Furniture",
     description:
-      "Professional re-covering and restoration for examination and therapy tables.",
-    category: "Tables",
+      "Examination tables, consultation furniture, office chairs, reception seating, and related professional-use furniture.",
+    category: "Professional Furniture",
     image: "/catalog/exam-table.png",
+    tag: "Professional spaces",
   },
   {
-    title: "Custom Medical Equipment",
+    title: "Custom Accessories & Bespoke Items",
     description:
-      "Tailored upholstery and refurbishment solutions for specialized medical equipment.",
-    category: "Custom",
+      "Plinth covers, pillowcases, PVC bed covers, stool covers, chair covers, custom scrubs, Mulligan NAGS & SNAGS belts, and tailored accessory solutions.",
+    category: "Accessories",
     image: "/catalog/custom-equipment.png",
+    tag: "Custom made",
   },
 ];
 
-export default function CatalogPage() {
-  const [activeCategory, setActiveCategory] = useState<CatalogCategory>("All");
+export default function EquipmentPage() {
+  const [activeCategory, setActiveCategory] = useState<EquipmentCategory>("All");
 
   const filteredItems = useMemo(() => {
-    if (activeCategory === "All") return catalogItems;
-    return catalogItems.filter((item) => item.category === activeCategory);
+    if (activeCategory === "All") return equipmentItems;
+    return equipmentItems.filter((item) => item.category === activeCategory);
   }, [activeCategory]);
 
   return (
-    <main className="min-h-screen bg-slate-50 text-slate-900">
-      <section className="border-b border-slate-200 bg-white">
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-5">
-          <Link href="/" className="text-xl font-bold tracking-tight text-sky-800">
-            MediRevive
+    <main className="brand-shell">
+      <section className="brand-container pt-6">
+        <header className="flex items-center justify-between rounded-2xl border border-white/10 bg-white/5 px-4 py-4 md:px-6">
+          <Link href="/" className="flex items-center gap-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-[#11c5a147] bg-[#11c5a112] text-[#11c5a1]">
+              +
+            </div>
+            <span className="text-lg text-[var(--text)]">
+              <span className="font-medium">Medi</span>
+              <span className="text-[#11c5a1]">Revive</span>
+            </span>
           </Link>
 
-          <nav className="flex items-center gap-3">
-            <Link
-              href="/"
-              className="rounded-lg px-4 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-100"
-            >
+          <nav className="hidden items-center gap-3 md:flex">
+            <Link href="/" className="text-sm text-[var(--text-soft)] transition hover:text-white">
               Home
             </Link>
-            <Link
-              href="/quote"
-              className="rounded-lg bg-sky-700 px-4 py-2 text-sm font-semibold text-white transition hover:bg-sky-800"
-            >
-              Request a Quote
+            <Link href="/quote" className="text-sm text-[var(--text-soft)] transition hover:text-white">
+              Consultation
+            </Link>
+            <Link href="/contact" className="text-sm text-[var(--text-soft)] transition hover:text-white">
+              Contact
+            </Link>
+            <Link href="/admin" className="brand-button-primary">
+              Dashboard
             </Link>
           </nav>
-        </div>
+
+          <div className="md:hidden">
+            <Link href="/quote" className="brand-button-primary text-sm">
+              Quote
+            </Link>
+          </div>
+        </header>
       </section>
 
-      <section className="mx-auto max-w-6xl px-6 py-16">
-        <div className="max-w-2xl">
-          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-sky-700">
-            Catalog
-          </p>
-          <h1 className="mt-3 text-4xl font-bold tracking-tight">
-            Services and equipment categories
-          </h1>
-          <p className="mt-4 text-slate-600">
-            Browse the equipment types MediRevive can restore, repair, or reupholster.
-          </p>
-        </div>
+      <section className="brand-section">
+        <div className="brand-container">
+          <div className="max-w-3xl">
+            <span className="brand-kicker">Equipment we work with</span>
+            <h1 className="brand-title-lg mt-5">
+              Quote-only restoration for treatment, clinical, and professional furniture.
+            </h1>
+            <p className="brand-body mt-6">
+              This page shows the types of equipment and professional-use items
+              MediRevive typically restores, reupholsters, repairs, or manufactures
+              accessories for. Custom items are also accepted for assessment.
+            </p>
+          </div>
 
-        <div className="mt-8 flex flex-wrap gap-3">
-          {categories.map((category) => {
-            const isActive = activeCategory === category;
+          <div className="mt-10 flex flex-wrap gap-3">
+            {categories.map((category) => {
+              const isActive = activeCategory === category;
 
-            return (
-              <button
-                key={category}
-                type="button"
-                onClick={() => setActiveCategory(category)}
-                className={`rounded-full px-4 py-2 text-sm font-medium transition ${
-                  isActive
-                    ? "bg-sky-700 text-white"
-                    : "bg-white text-slate-700 ring-1 ring-slate-200 hover:bg-slate-100"
-                }`}
-              >
-                {category}
-              </button>
-            );
-          })}
-        </div>
+              return (
+                <button
+                  key={category}
+                  type="button"
+                  onClick={() => setActiveCategory(category)}
+                  className={
+                    isActive
+                      ? "brand-button-primary min-h-0 px-4 py-2 text-sm"
+                      : "rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm font-medium text-[var(--text-soft)] transition hover:bg-white/10 hover:text-white"
+                  }
+                >
+                  {category}
+                </button>
+              );
+            })}
+          </div>
 
-        <div className="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {filteredItems.map((item) => (
-            <div
-              key={item.title}
-              className="overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-slate-200"
-            >
-             <div className="h-64 w-full bg-white p-4">
-  <div className="flex h-full w-full items-center justify-center rounded-2xl border border-slate-200 bg-white">
-    <img
-      src={item.image}
-      alt={item.title}
-      className="h-full w-full object-contain p-3"
-    />
-  </div>
-</div>
+          <div className="mt-12 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+            {filteredItems.map((item) => (
+              <div key={item.title} className="brand-card">
+                <div className="h-72 w-full p-4">
+                  <div className="flex h-full w-full items-center justify-center rounded-2xl border border-white/10 bg-white">
+                    <img
+                      src={item.image}
+                      alt={item.title}
+                      className="h-full w-full object-contain p-4"
+                    />
+                  </div>
+                </div>
 
-              <div className="p-6">
-                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-sky-700">
-                  {item.category}
-                </p>
-                <h2 className="mt-2 text-lg font-semibold">{item.title}</h2>
-                <p className="mt-2 text-sm leading-6 text-slate-600">
-                  {item.description}
+                <div className="brand-card-body">
+                  <div className="flex items-center justify-between gap-3">
+                    <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--teal)]">
+                      {item.category}
+                    </p>
+                    <span className="text-xs uppercase tracking-[0.14em] text-[var(--text-muted)]">
+                      {item.tag}
+                    </span>
+                  </div>
+
+                  <h2 className="mt-3 text-2xl text-[var(--text)]">{item.title}</h2>
+                  <p className="mt-3 leading-8 text-[var(--text-soft)]">
+                    {item.description}
+                  </p>
+
+                  <div className="mt-6 flex items-center justify-between gap-3">
+                    <span className="brand-badge">Quote only</span>
+                    <Link href="/quote" className="text-sm font-medium text-[var(--teal)]">
+                      Request quote →
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="brand-panel mt-12 p-8 md:p-10">
+            <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+              <div className="max-w-2xl">
+                <span className="brand-kicker">Custom items accepted</span>
+                <h2 className="mt-5 text-4xl">Not listed above?</h2>
+                <p className="mt-4 leading-8 text-[var(--text-soft)]">
+                  MediRevive also handles bespoke solutions. If your treatment,
+                  clinical, wellness, salon, or professional-use item is not shown
+                  here, you can still send photos and details for assessment.
                 </p>
               </div>
-            </div>
-          ))}
-        </div>
 
-        <div className="mt-12 rounded-3xl bg-sky-700 p-8 text-white">
-          <h2 className="text-2xl font-bold">Need pricing for a specific item?</h2>
-          <p className="mt-3 max-w-2xl text-sky-100">
-            Send MediRevive your item details, photos, and a description of the work needed.
-          </p>
-          <Link
-            href="/quote"
-            className="mt-6 inline-block rounded-xl bg-white px-5 py-3 font-semibold text-sky-800 transition hover:bg-slate-100"
-          >
-            Go to Quote Request
-          </Link>
+              <Link href="/quote" className="brand-button-primary">
+                Start consultation →
+              </Link>
+            </div>
+          </div>
         </div>
       </section>
     </main>

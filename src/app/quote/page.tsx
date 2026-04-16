@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { FormEvent, useState } from "react";
+import { FormEvent, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { addDoc, collection, serverTimestamp } from "firebase/firestore";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
@@ -11,6 +11,7 @@ type FormData = {
   fullName: string;
   email: string;
   phone: string;
+  location: string;
   serviceType: string;
   itemType: string;
   description: string;
@@ -21,11 +22,18 @@ const initialForm: FormData = {
   fullName: "",
   email: "",
   phone: "",
+  location: "",
   serviceType: "",
   itemType: "",
   description: "",
   consent: false,
 };
+
+const consultationNotes = [
+  "Every quote is based on the real condition of the equipment.",
+  "Photos help us assess the restoration scope more accurately.",
+  "Location helps with logistics, travel, and collection planning.",
+];
 
 export default function QuotePage() {
   const router = useRouter();
@@ -34,6 +42,11 @@ export default function QuotePage() {
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+
+  const selectedImageName = useMemo(
+    () => selectedImage?.name ?? "No file selected",
+    [selectedImage]
+  );
 
   function generateReference() {
     const random = Math.floor(1000 + Math.random() * 9000);
@@ -47,12 +60,13 @@ export default function QuotePage() {
       `quote-uploads/${referenceCode}-${Date.now()}.${fileExtension}`
     );
 
-    await uploadBytes(storageRef, file, {
+    await uploadBytes(storageRef, {
+      ...file,
+    } as Blob, {
       contentType: file.type,
     });
 
-    const downloadURL = await getDownloadURL(storageRef);
-    return downloadURL;
+    return getDownloadURL(storageRef);
   }
 
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
@@ -73,6 +87,7 @@ export default function QuotePage() {
         fullName: form.fullName,
         email: form.email,
         phone: form.phone,
+        location: form.location,
         serviceType: form.serviceType,
         itemType: form.itemType,
         description: form.description,
@@ -95,224 +110,256 @@ export default function QuotePage() {
   }
 
   return (
-    <main className="min-h-screen bg-slate-50 text-slate-900">
-      <section className="border-b border-slate-200 bg-white">
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-5">
-          <Link href="/" className="text-xl font-bold tracking-tight text-sky-800">
-            MediRevive
+    <main className="brand-shell">
+      <section className="brand-container pt-6">
+        <header className="flex items-center justify-between rounded-2xl border border-white/10 bg-white/5 px-4 py-4 md:px-6">
+          <Link href="/" className="flex items-center gap-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-[#11c5a147] bg-[#11c5a112] text-[#11c5a1]">
+              +
+            </div>
+            <span className="text-lg text-[var(--text)]">
+              <span className="font-medium">Medi</span>
+              <span className="text-[#11c5a1]">Revive</span>
+            </span>
           </Link>
 
-          <nav className="flex items-center gap-3">
-            <Link
-              href="/"
-              className="rounded-lg px-4 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-100"
-            >
+          <nav className="hidden items-center gap-3 md:flex">
+            <Link href="/" className="text-sm text-[var(--text-soft)] transition hover:text-white">
               Home
             </Link>
-            <Link
-              href="/catalog"
-              className="rounded-lg px-4 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-100"
-            >
-              Catalog
+            <Link href="/catalog" className="text-sm text-[var(--text-soft)] transition hover:text-white">
+              Equipment
+            </Link>
+            <Link href="/contact" className="text-sm text-[var(--text-soft)] transition hover:text-white">
+              Contact
+            </Link>
+            <Link href="/admin" className="brand-button-primary">
+              Dashboard
             </Link>
           </nav>
-        </div>
+
+          <div className="md:hidden">
+            <Link href="/catalog" className="brand-button-secondary text-sm">
+              Equipment
+            </Link>
+          </div>
+        </header>
       </section>
 
-      <section className="mx-auto max-w-3xl px-6 py-16">
-        <div className="mb-10 text-center">
-          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-sky-700">
-            Quote Request
-          </p>
-          <h1 className="mt-3 text-4xl font-bold tracking-tight">
-            Tell us what you need
-          </h1>
-          <p className="mt-3 text-slate-600">
-            Complete the form below and MediRevive will contact you regarding your
-            medical equipment or bedding quotation.
-          </p>
+      <section className="brand-section">
+        <div className="brand-container grid gap-10 lg:grid-cols-[0.85fr_1.15fr] lg:items-start">
+          <div className="lg:sticky lg:top-10">
+            <span className="brand-kicker">Consultation request</span>
+            <h1 className="brand-title-lg mt-5">Tell us what needs restoring.</h1>
+            <p className="brand-body mt-6">
+              Submit your equipment details for a specialist assessment. Pricing is
+              provided by quote only after we review the condition, scope, and logistics.
+            </p>
+
+            <div className="brand-panel mt-10 p-6">
+              <h2 className="text-2xl">What to expect</h2>
+              <div className="mt-5 space-y-4">
+                {consultationNotes.map((note) => (
+                  <div key={note} className="flex items-start gap-3 text-[var(--text-soft)]">
+                    <span className="mt-2 h-2 w-2 rounded-full bg-[var(--teal)]" />
+                    <p className="leading-8">{note}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <div className="brand-panel p-6 md:p-8">
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div className="grid gap-6 md:grid-cols-2">
+                <div>
+                  <label htmlFor="fullName" className="mb-2 block text-sm font-medium text-[var(--text-soft)]">
+                    Full name
+                  </label>
+                  <input
+                    id="fullName"
+                    name="fullName"
+                    type="text"
+                    required
+                    value={form.fullName}
+                    onChange={(e) => setForm({ ...form, fullName: e.target.value })}
+                    className="brand-input"
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="email" className="mb-2 block text-sm font-medium text-[var(--text-soft)]">
+                    Email address
+                  </label>
+                  <input
+                    id="email"
+                    name="email"
+                    type="email"
+                    required
+                    value={form.email}
+                    onChange={(e) => setForm({ ...form, email: e.target.value })}
+                    className="brand-input"
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="phone" className="mb-2 block text-sm font-medium text-[var(--text-soft)]">
+                    Phone number
+                  </label>
+                  <input
+                    id="phone"
+                    name="phone"
+                    type="tel"
+                    required
+                    value={form.phone}
+                    onChange={(e) => setForm({ ...form, phone: e.target.value })}
+                    className="brand-input"
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="location" className="mb-2 block text-sm font-medium text-[var(--text-soft)]">
+                    Location / area
+                  </label>
+                  <input
+                    id="location"
+                    name="location"
+                    type="text"
+                    required
+                    placeholder="e.g. Johannesburg North, Pretoria, Rustenburg"
+                    value={form.location}
+                    onChange={(e) => setForm({ ...form, location: e.target.value })}
+                    className="brand-input"
+                  />
+                </div>
+
+                <div className="md:col-span-2">
+                  <label htmlFor="serviceType" className="mb-2 block text-sm font-medium text-[var(--text-soft)]">
+                    Service needed
+                  </label>
+                  <select
+                    id="serviceType"
+                    name="serviceType"
+                    required
+                    value={form.serviceType}
+                    onChange={(e) => setForm({ ...form, serviceType: e.target.value })}
+                    className="brand-select"
+                  >
+                    <option value="">Select a service</option>
+                    <option value="Treatment & Professional Furniture Reupholstery">
+                      Treatment & Professional Furniture Reupholstery
+                    </option>
+                    <option value="Structural Repairs & Refurbishment">
+                      Structural Repairs & Refurbishment
+                    </option>
+                    <option value="Custom Accessories">
+                      Custom Accessories
+                    </option>
+                    <option value="Bespoke Solution">
+                      Bespoke Solution
+                    </option>
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <label htmlFor="itemType" className="mb-2 block text-sm font-medium text-[var(--text-soft)]">
+                  Equipment type
+                </label>
+                <input
+                  id="itemType"
+                  name="itemType"
+                  type="text"
+                  required
+                  placeholder="e.g. Treatment bed, plinth, office chair, stool"
+                  value={form.itemType}
+                  onChange={(e) => setForm({ ...form, itemType: e.target.value })}
+                  className="brand-input"
+                />
+              </div>
+
+              <div>
+                <label htmlFor="description" className="mb-2 block text-sm font-medium text-[var(--text-soft)]">
+                  Equipment condition & required work
+                </label>
+                <textarea
+                  id="description"
+                  name="description"
+                  required
+                  rows={6}
+                  placeholder="Describe the equipment condition, issue, and service needed..."
+                  value={form.description}
+                  onChange={(e) => setForm({ ...form, description: e.target.value })}
+                  className="brand-textarea"
+                />
+              </div>
+
+              <div className="brand-panel-soft p-5">
+                <label htmlFor="quoteImage" className="mb-2 block text-sm font-medium text-[var(--text-soft)]">
+                  Upload supporting image
+                </label>
+
+                <label
+                  htmlFor="quoteImage"
+                  className="flex cursor-pointer flex-col items-start justify-center rounded-2xl border border-dashed border-white/15 bg-white/5 p-5 transition hover:bg-white/10"
+                >
+                  <span className="text-base font-medium text-[var(--text)]">
+                    Add equipment photo
+                  </span>
+                  <span className="mt-2 text-sm text-[var(--text-soft)]">
+                    This helps us assess wear, damage, upholstery condition, and repair scope.
+                  </span>
+                  <span className="mt-4 text-sm font-medium text-[var(--teal)]">
+                    {selectedImageName}
+                  </span>
+                </label>
+
+                <input
+                  id="quoteImage"
+                  name="quoteImage"
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0] || null;
+                    setSelectedImage(file);
+                  }}
+                  className="hidden"
+                />
+              </div>
+
+              <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-4">
+                <div className="flex items-start gap-3">
+                  <input
+                    id="consent"
+                    name="consent"
+                    type="checkbox"
+                    checked={form.consent}
+                    onChange={(e) => setForm({ ...form, consent: e.target.checked })}
+                    className="mt-1 h-4 w-4 accent-[var(--teal)]"
+                  />
+                  <label htmlFor="consent" className="text-sm leading-7 text-[var(--text-soft)]">
+                    I agree to be contacted by MediRevive regarding this consultation
+                    and related service communication.
+                  </label>
+                </div>
+              </div>
+
+              <button
+                type="submit"
+                disabled={loading}
+                className="brand-button-primary w-full disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                {loading ? "Sending consultation..." : "Submit consultation →"}
+              </button>
+
+              {errorMessage ? (
+                <p className="rounded-2xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm text-red-200">
+                  {errorMessage}
+                </p>
+              ) : null}
+            </form>
+          </div>
         </div>
-
-        <form
-          onSubmit={handleSubmit}
-          className="space-y-6 rounded-2xl bg-white p-8 shadow-sm ring-1 ring-slate-200"
-        >
-          <div className="grid gap-6 md:grid-cols-2">
-            <div>
-              <label
-                htmlFor="fullName"
-                className="mb-2 block text-sm font-medium text-slate-700"
-              >
-                Full Name
-              </label>
-              <input
-                id="fullName"
-                name="fullName"
-                type="text"
-                required
-                value={form.fullName}
-                onChange={(e) =>
-                  setForm({ ...form, fullName: e.target.value })
-                }
-                className="w-full rounded-xl border border-slate-300 px-4 py-3 outline-none focus:border-sky-500"
-              />
-            </div>
-
-            <div>
-              <label
-                htmlFor="email"
-                className="mb-2 block text-sm font-medium text-slate-700"
-              >
-                Email Address
-              </label>
-              <input
-                id="email"
-                name="email"
-                type="email"
-                required
-                value={form.email}
-                onChange={(e) => setForm({ ...form, email: e.target.value })}
-                className="w-full rounded-xl border border-slate-300 px-4 py-3 outline-none focus:border-sky-500"
-              />
-            </div>
-
-            <div>
-              <label
-                htmlFor="phone"
-                className="mb-2 block text-sm font-medium text-slate-700"
-              >
-                Phone Number
-              </label>
-              <input
-                id="phone"
-                name="phone"
-                type="tel"
-                required
-                value={form.phone}
-                onChange={(e) => setForm({ ...form, phone: e.target.value })}
-                className="w-full rounded-xl border border-slate-300 px-4 py-3 outline-none focus:border-sky-500"
-              />
-            </div>
-
-            <div>
-              <label
-                htmlFor="serviceType"
-                className="mb-2 block text-sm font-medium text-slate-700"
-              >
-                Service Type
-              </label>
-              <select
-                id="serviceType"
-                name="serviceType"
-                required
-                value={form.serviceType}
-                onChange={(e) =>
-                  setForm({ ...form, serviceType: e.target.value })
-                }
-                className="w-full rounded-xl border border-slate-300 px-4 py-3 outline-none focus:border-sky-500"
-              >
-                <option value="">Select a service</option>
-                <option value="Reupholstery">Reupholstery</option>
-                <option value="Repairs">Repairs</option>
-                <option value="Custom Refurbishment">Custom Refurbishment</option>
-              </select>
-            </div>
-          </div>
-
-          <div>
-            <label
-              htmlFor="itemType"
-              className="mb-2 block text-sm font-medium text-slate-700"
-            >
-              Item Type
-            </label>
-            <input
-              id="itemType"
-              name="itemType"
-              type="text"
-              required
-              placeholder="e.g. Hospital bed, treatment chair, wheelchair"
-              value={form.itemType}
-              onChange={(e) => setForm({ ...form, itemType: e.target.value })}
-              className="w-full rounded-xl border border-slate-300 px-4 py-3 outline-none focus:border-sky-500"
-            />
-          </div>
-
-          <div>
-            <label
-              htmlFor="description"
-              className="mb-2 block text-sm font-medium text-slate-700"
-            >
-              Description
-            </label>
-            <textarea
-              id="description"
-              name="description"
-              required
-              rows={5}
-              placeholder="Describe the work needed..."
-              value={form.description}
-              onChange={(e) =>
-                setForm({ ...form, description: e.target.value })
-              }
-              className="w-full rounded-xl border border-slate-300 px-4 py-3 outline-none focus:border-sky-500"
-            />
-          </div>
-
-          <div>
-            <label
-              htmlFor="quoteImage"
-              className="mb-2 block text-sm font-medium text-slate-700"
-            >
-              Upload Image
-            </label>
-            <input
-              id="quoteImage"
-              name="quoteImage"
-              type="file"
-              accept="image/*"
-              onChange={(e) => {
-                const file = e.target.files?.[0] || null;
-                setSelectedImage(file);
-              }}
-              className="block w-full rounded-xl border border-slate-300 px-4 py-3 text-sm outline-none file:mr-4 file:rounded-lg file:border-0 file:bg-sky-700 file:px-4 file:py-2 file:font-medium file:text-white hover:file:bg-sky-800"
-            />
-            <p className="mt-2 text-sm text-slate-500">
-              Upload a photo of the equipment if available.
-            </p>
-          </div>
-
-          <div className="flex items-start gap-3 rounded-xl bg-slate-50 px-4 py-4">
-            <input
-              id="consent"
-              name="consent"
-              type="checkbox"
-              checked={form.consent}
-              onChange={(e) =>
-                setForm({ ...form, consent: e.target.checked })
-              }
-              className="mt-1 h-4 w-4"
-            />
-            <label htmlFor="consent" className="text-sm leading-6 text-slate-600">
-              I agree to be contacted by MediRevive regarding my request and future
-              service-related communication.
-            </label>
-          </div>
-
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full rounded-xl bg-sky-700 px-5 py-3 font-semibold text-white transition hover:bg-sky-800 disabled:cursor-not-allowed disabled:opacity-60"
-          >
-            {loading ? "Sending..." : "Submit Quote Request"}
-          </button>
-
-          {errorMessage && (
-            <p className="rounded-xl bg-red-50 px-4 py-3 text-sm text-red-700">
-              {errorMessage}
-            </p>
-          )}
-        </form>
       </section>
     </main>
   );
