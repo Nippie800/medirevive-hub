@@ -1,11 +1,19 @@
-"use client";
-
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
 
-export default function QuoteSuccessPage() {
-  const searchParams = useSearchParams();
-  const reference = searchParams.get("ref");
+type QuoteSuccessPageProps = {
+  searchParams: Promise<{
+    ref?: string | string[];
+  }>;
+};
+
+export default async function QuoteSuccessPage({
+  searchParams,
+}: QuoteSuccessPageProps) {
+  const resolvedSearchParams = await searchParams;
+  const referenceValue = resolvedSearchParams.ref;
+  const reference = Array.isArray(referenceValue)
+    ? referenceValue[0]
+    : referenceValue;
 
   return (
     <main className="brand-shell">
@@ -23,27 +31,21 @@ export default function QuoteSuccessPage() {
 
             <div className="mt-10 grid gap-4 sm:grid-cols-3">
               <div className="brand-stat">
-                <div className="brand-stat-number">
-                  01
-                </div>
+                <div className="brand-stat-number">01</div>
                 <p className="mt-2 text-sm text-[var(--text-soft)]">
                   Consultation logged
                 </p>
               </div>
 
               <div className="brand-stat">
-                <div className="brand-stat-number">
-                  02
-                </div>
+                <div className="brand-stat-number">02</div>
                 <p className="mt-2 text-sm text-[var(--text-soft)]">
                   Specialist review
                 </p>
               </div>
 
               <div className="brand-stat">
-                <div className="brand-stat-number">
-                  03
-                </div>
+                <div className="brand-stat-number">03</div>
                 <p className="mt-2 text-sm text-[var(--text-soft)]">
                   Quote response
                 </p>
