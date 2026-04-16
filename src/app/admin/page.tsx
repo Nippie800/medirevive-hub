@@ -10,7 +10,9 @@ import {
   query,
   updateDoc,
 } from "firebase/firestore";
-import { db } from "../../lib/firebase";
+import { onAuthStateChanged, signOut, User } from "firebase/auth";
+import { useRouter } from "next/navigation";
+import { auth, db } from "../../lib/firebase";
 
 type QuoteRequest = {
   id: string;
@@ -38,14 +40,37 @@ const statusOptions: QuoteRequest["status"][] = [
 ];
 
 export default function AdminPage() {
+  const router = useRouter();
+
+  const [user, setUser] = useState<User | null>(null);
+  const [authLoading, setAuthLoading] = useState(true);
   const [requests, setRequests] = useState<QuoteRequest[]>([]);
   const [selectedRequest, setSelectedRequest] = useState<QuoteRequest | null>(null);
   const [activeFilter, setActiveFilter] = useState<"ALL" | QuoteRequest["status"]>("ALL");
+  const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(true);
   const [updatingId, setUpdatingId] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      if (!currentUser) {
+        router.replace("/admin/login");
+        setUser(null);
+        setAuthLoading(false);
+        return;
+      }
+
+      setUser(currentUser);
+      setAuthLoading(false);
+    });
+
+    return () => unsubscribe();
+  }, [router]);
+
+  useEffect(() => {
+    if (!user) return;
+
     const requestsQuery = query(
       collection(db, "quoteRequests"),
       orderBy("createdAt", "desc")
@@ -93,12 +118,36 @@ export default function AdminPage() {
     );
 
     return () => unsubscribe();
-  }, [selectedRequest]);
+  }, [user, selectedRequest]);
 
   const filteredRequests = useMemo(() => {
-    if (activeFilter === "ALL") return requests;
-    return requests.filter((request) => request.status === activeFilter);
-  }, [requests, activeFilter]);
+    const normalized = searchTerm.trim().toLowerCase();
+
+    return requests.filter((request) => {
+      const matchesStatus =
+        activeFilter === "ALL" ? true : request.status === activeFilter;
+
+      const matchesSearch =
+        normalized.length === 0
+          ? true
+          : request.reference.toLowerCase().includes(normalized) ||
+            request.fullName.toLowerCase().includes(normalized) ||
+            request.email.toLowerCase().includes(normalized) ||
+            request.itemType.toLowerCase().includes(normalized);
+
+      return matchesStatus && matchesSearch;
+    });
+  }, [requests, activeFilter, searchTerm]);
+
+  const counts = useMemo(() => {
+    return {
+      ALL: requests.length,
+      NEW: requests.filter((r) => r.status === "NEW").length,
+      IN_REVIEW: requests.filter((r) => r.status === "IN_REVIEW").length,
+      QUOTED: requests.filter((r) => r.status === "QUOTED").length,
+      COMPLETED: requests.filter((r) => r.status === "COMPLETED").length,
+    };
+  }, [requests]);
 
   function formatDate(seconds?: number) {
     if (!seconds) return "No date";
@@ -125,6 +174,21 @@ export default function AdminPage() {
     }
   }
 
+  async function handleLogout() {
+    await signOut(auth);
+    router.replace("/admin/login");
+  }
+
+  if (authLoading) {
+    return (
+      <main className="min-h-screen bg-slate-50 px-6 py-16 text-slate-900">
+        <div className="mx-auto max-w-7xl rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-200">
+          Checking access...
+        </div>
+      </main>
+    );
+  }
+
   return (
     <main className="min-h-screen bg-slate-50 text-slate-900">
       <section className="border-b border-slate-200 bg-white">
@@ -133,26 +197,18 @@ export default function AdminPage() {
             MediRevive
           </Link>
 
-          <nav className="flex items-center gap-3">
-            <Link
-              href="/"
-              className="rounded-lg px-4 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-100"
+          <div className="flex items-center gap-3">
+            <p className="hidden text-sm text-slate-500 md:block">
+              {user?.email}
+            </p>
+            <button
+              type="button"
+              onClick={handleLogout}
+              className="rounded-lg border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-100"
             >
-              Home
-            </Link>
-            <Link
-              href="/catalog"
-              className="rounded-lg px-4 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-100"
-            >
-              Catalog
-            </Link>
-            <Link
-              href="/quote"
-              className="rounded-lg px-4 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-100"
-            >
-              Quote
-            </Link>
-          </nav>
+              Log Out
+            </button>
+          </div>
         </div>
       </section>
 
@@ -165,31 +221,65 @@ export default function AdminPage() {
             Quote requests
           </h1>
           <p className="mt-2 text-slate-600">
-            View incoming requests, inspect images, and update progress statuses.
+            View incoming requests, inspect images, search records, and update statuses.
           </p>
         </div>
 
-        <div className="mb-6 flex flex-wrap gap-3">
-          {["ALL", ...statusOptions].map((status) => {
-            const isActive = activeFilter === status;
+        <div className="mb-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
+          <div className="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
+            <p className="text-sm text-slate-500">All Requests</p>
+            <p className="mt-2 text-3xl font-bold">{counts.ALL}</p>
+          </div>
+          <div className="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
+            <p className="text-sm text-slate-500">New</p>
+            <p className="mt-2 text-3xl font-bold">{counts.NEW}</p>
+          </div>
+          <div className="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
+            <p className="text-sm text-slate-500">In Review</p>
+            <p className="mt-2 text-3xl font-bold">{counts.IN_REVIEW}</p>
+          </div>
+          <div className="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
+            <p className="text-sm text-slate-500">Quoted</p>
+            <p className="mt-2 text-3xl font-bold">{counts.QUOTED}</p>
+          </div>
+          <div className="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
+            <p className="text-sm text-slate-500">Completed</p>
+            <p className="mt-2 text-3xl font-bold">{counts.COMPLETED}</p>
+          </div>
+        </div>
 
-            return (
-              <button
-                key={status}
-                type="button"
-                onClick={() =>
-                  setActiveFilter(status as "ALL" | QuoteRequest["status"])
-                }
-                className={`rounded-full px-4 py-2 text-sm font-medium transition ${
-                  isActive
-                    ? "bg-sky-700 text-white"
-                    : "bg-white text-slate-700 ring-1 ring-slate-200 hover:bg-slate-100"
-                }`}
-              >
-                {status}
-              </button>
-            );
-          })}
+        <div className="mb-6 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+          <div className="flex flex-wrap gap-3">
+            {(["ALL", ...statusOptions] as const).map((status) => {
+              const isActive = activeFilter === status;
+              const countValue = counts[status];
+
+              return (
+                <button
+                  key={status}
+                  type="button"
+                  onClick={() => setActiveFilter(status)}
+                  className={`rounded-full px-4 py-2 text-sm font-medium transition ${
+                    isActive
+                      ? "bg-sky-700 text-white"
+                      : "bg-white text-slate-700 ring-1 ring-slate-200 hover:bg-slate-100"
+                  }`}
+                >
+                  {status} ({countValue})
+                </button>
+              );
+            })}
+          </div>
+
+          <div className="w-full lg:max-w-sm">
+            <input
+              type="text"
+              placeholder="Search by reference, name, email, or item..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full rounded-xl border border-slate-300 px-4 py-3 outline-none focus:border-sky-500"
+            />
+          </div>
         </div>
 
         {errorMessage ? (
@@ -208,7 +298,7 @@ export default function AdminPage() {
               {loading ? (
                 <div className="p-5 text-sm text-slate-500">Loading requests...</div>
               ) : filteredRequests.length === 0 ? (
-                <div className="p-5 text-sm text-slate-500">No requests found.</div>
+                <div className="p-5 text-sm text-slate-500">No matching requests found.</div>
               ) : (
                 filteredRequests.map((request) => {
                   const isSelected = selectedRequest?.id === request.id;
