@@ -54,7 +54,7 @@ export default function HomePage() {
             <img
               src="/medirevive-logo.png"
               alt="MediRevive"
-              className="h-50 w-auto"
+              className="h-35 w-auto"
             />
           </Link>
 

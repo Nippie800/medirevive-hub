@@ -20,6 +20,7 @@ type QuoteRequest = {
   fullName: string;
   email: string;
   phone: string;
+  location?: string;
   serviceType: string;
   itemType: string;
   description: string;
@@ -40,10 +41,10 @@ const statusOptions: QuoteRequest["status"][] = [
 ];
 
 const statusLabels: Record<QuoteRequest["status"], string> = {
-  NEW: "New Intake",
-  IN_REVIEW: "Assessment",
-  QUOTED: "Awaiting Approval",
-  COMPLETED: "Restored",
+  NEW: "New",
+  IN_REVIEW: "In Review",
+  QUOTED: "Quoted",
+  COMPLETED: "Completed",
 };
 
 export default function AdminPage() {
@@ -95,6 +96,7 @@ export default function AdminPage() {
             fullName: docData.fullName ?? "",
             email: docData.email ?? "",
             phone: docData.phone ?? "",
+            location: docData.location ?? "",
             serviceType: docData.serviceType ?? "",
             itemType: docData.itemType ?? "",
             description: docData.description ?? "",
@@ -119,7 +121,7 @@ export default function AdminPage() {
       },
       (error) => {
         console.error(error);
-        setErrorMessage("Failed to load consultations.");
+        setErrorMessage("Failed to load requests.");
         setLoading(false);
       }
     );
@@ -175,7 +177,7 @@ export default function AdminPage() {
       });
     } catch (error) {
       console.error(error);
-      setErrorMessage("Failed to update restoration stage.");
+      setErrorMessage("Failed to update status.");
     } finally {
       setUpdatingId(null);
     }
@@ -188,10 +190,14 @@ export default function AdminPage() {
 
   if (authLoading) {
     return (
-      <main className="brand-shell">
-        <section className="brand-container py-16">
-          <div className="brand-panel p-6">
-            <p className="text-[var(--text-soft)]">Checking access...</p>
+      <main className="site-shell">
+        <section className="site-section">
+          <div className="site-container">
+            <div className="site-card">
+              <div className="site-card-body">
+                <p className="text-[var(--text-soft)]">Checking access...</p>
+              </div>
+            </div>
           </div>
         </section>
       </main>
@@ -199,63 +205,62 @@ export default function AdminPage() {
   }
 
   return (
-    <main className="brand-shell">
-      <section className="brand-container pt-6">
-        <header className="flex flex-col gap-4 rounded-2xl border border-white/10 bg-white/5 px-4 py-4 md:flex-row md:items-center md:justify-between md:px-6">
-          <Link href="/" className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-[#11c5a147] bg-[#11c5a112] text-[#11c5a1]">
-              +
+    <main className="site-shell">
+      <header className="site-header">
+        <div className="site-container flex flex-col gap-4 py-4 md:flex-row md:items-center md:justify-between">
+          <div className="flex items-center gap-3">
+            <img
+              src="/medirevive-logo.png"
+              alt="MediRevive"
+              className="h-10 w-auto"
+            />
+            <div>
+              <p className="text-sm font-semibold text-[var(--primary)]">Admin Dashboard</p>
+              <p className="text-sm text-[var(--text-soft)]">{user?.email}</p>
             </div>
-            <span className="text-lg text-[var(--text)]">
-              <span className="font-medium">Medi</span>
-              <span className="text-[#11c5a1]">Revive</span>
-            </span>
-          </Link>
+          </div>
 
-          <div className="flex flex-wrap items-center gap-3">
-            <p className="text-sm text-[var(--text-soft)]">{user?.email}</p>
-            <button
-              type="button"
-              onClick={handleLogout}
-              className="brand-button-secondary"
-            >
-              Log out
+          <div className="flex items-center gap-3">
+            <Link href="/" className="site-button-secondary">
+              View Site
+            </Link>
+            <button type="button" onClick={handleLogout} className="site-button-primary">
+              Log Out
             </button>
           </div>
-        </header>
-      </section>
+        </div>
+      </header>
 
-      <section className="brand-section">
-        <div className="brand-container">
-          <div className="mb-10">
-            <span className="brand-kicker">Internal dashboard</span>
-            <h1 className="brand-title-lg mt-5">Lead tracker & restoration pipeline.</h1>
-            <p className="brand-body mt-6">
-              View consultations, inspect uploaded equipment images, and move each
-              client through assessment, quoting, and restoration.
+      <section className="site-section">
+        <div className="site-container">
+          <div className="mb-8">
+            <span className="site-kicker">Requests</span>
+            <h1 className="site-title-lg mt-5">Simple and effective workflow tracking.</h1>
+            <p className="site-body mt-6">
+              Review quote requests, view uploaded images, and update each request as it moves through the process.
             </p>
           </div>
 
           <div className="mb-8 grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
-            <div className="brand-stat">
-              <p className="text-sm text-[var(--text-soft)]">All consultations</p>
-              <p className="brand-stat-number mt-3">{counts.ALL}</p>
+            <div className="site-stat">
+              <p className="text-sm text-[var(--text-soft)]">All</p>
+              <p className="site-stat-number mt-3">{counts.ALL}</p>
             </div>
-            <div className="brand-stat">
-              <p className="text-sm text-[var(--text-soft)]">New intake</p>
-              <p className="brand-stat-number mt-3">{counts.NEW}</p>
+            <div className="site-stat">
+              <p className="text-sm text-[var(--text-soft)]">New</p>
+              <p className="site-stat-number mt-3">{counts.NEW}</p>
             </div>
-            <div className="brand-stat">
-              <p className="text-sm text-[var(--text-soft)]">Assessment</p>
-              <p className="brand-stat-number mt-3">{counts.IN_REVIEW}</p>
+            <div className="site-stat">
+              <p className="text-sm text-[var(--text-soft)]">In Review</p>
+              <p className="site-stat-number mt-3">{counts.IN_REVIEW}</p>
             </div>
-            <div className="brand-stat">
-              <p className="text-sm text-[var(--text-soft)]">Awaiting approval</p>
-              <p className="brand-stat-number mt-3">{counts.QUOTED}</p>
+            <div className="site-stat">
+              <p className="text-sm text-[var(--text-soft)]">Quoted</p>
+              <p className="site-stat-number mt-3">{counts.QUOTED}</p>
             </div>
-            <div className="brand-stat">
-              <p className="text-sm text-[var(--text-soft)]">Restored</p>
-              <p className="brand-stat-number mt-3">{counts.COMPLETED}</p>
+            <div className="site-stat">
+              <p className="text-sm text-[var(--text-soft)]">Completed</p>
+              <p className="site-stat-number mt-3">{counts.COMPLETED}</p>
             </div>
           </div>
 
@@ -272,8 +277,8 @@ export default function AdminPage() {
                     onClick={() => setActiveFilter(status)}
                     className={
                       isActive
-                        ? "brand-button-primary min-h-0 px-4 py-2 text-sm"
-                        : "rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm font-medium text-[var(--text-soft)] transition hover:bg-white/10 hover:text-white"
+                        ? "site-button-primary min-h-0 px-4 py-2 text-sm"
+                        : "rounded-full border border-[var(--border)] bg-white px-4 py-2 text-sm font-medium text-[var(--text-soft)] hover:bg-[var(--background-soft)]"
                     }
                   >
                     {status === "ALL" ? "All" : statusLabels[status]} ({countValue})
@@ -288,31 +293,31 @@ export default function AdminPage() {
                 placeholder="Search by reference, name, email, or item..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="brand-input"
+                className="site-input"
               />
             </div>
           </div>
 
           {errorMessage ? (
-            <div className="mb-6 rounded-2xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm text-red-200">
+            <div className="mb-6 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-[var(--danger)]">
               {errorMessage}
             </div>
           ) : null}
 
-          <div className="grid gap-6 xl:grid-cols-[360px_1fr]">
-            <div className="brand-panel overflow-hidden p-0">
-              <div className="border-b border-white/10 px-5 py-4">
-                <h2 className="text-2xl">Consultation queue</h2>
+          <div className="grid gap-6 xl:grid-cols-[350px_1fr]">
+            <div className="site-card overflow-hidden">
+              <div className="site-card-body border-b border-[var(--border)]">
+                <h2 className="text-2xl">Request list</h2>
               </div>
 
               <div className="max-h-[72vh] overflow-y-auto">
                 {loading ? (
                   <div className="p-5 text-sm text-[var(--text-soft)]">
-                    Loading consultations...
+                    Loading requests...
                   </div>
                 ) : filteredRequests.length === 0 ? (
                   <div className="p-5 text-sm text-[var(--text-soft)]">
-                    No matching consultations found.
+                    No matching requests found.
                   </div>
                 ) : (
                   filteredRequests.map((request) => {
@@ -323,8 +328,8 @@ export default function AdminPage() {
                         key={request.id}
                         type="button"
                         onClick={() => setSelectedRequest(request)}
-                        className={`w-full border-b border-white/10 px-5 py-4 text-left transition ${
-                          isSelected ? "bg-white/10" : "bg-transparent hover:bg-white/5"
+                        className={`w-full border-b border-[var(--border)] px-5 py-4 text-left transition ${
+                          isSelected ? "bg-[var(--background-soft)]" : "bg-white hover:bg-[var(--background-soft)]"
                         }`}
                       >
                         <div className="flex items-start justify-between gap-3">
@@ -340,7 +345,7 @@ export default function AdminPage() {
                             </p>
                           </div>
 
-                          <span className="brand-badge whitespace-nowrap">
+                          <span className="site-badge whitespace-nowrap">
                             {statusLabels[request.status]}
                           </span>
                         </div>
@@ -351,81 +356,92 @@ export default function AdminPage() {
               </div>
             </div>
 
-            <div className="brand-panel p-6">
-              {!selectedRequest ? (
-                <div className="text-sm text-[var(--text-soft)]">
-                  Select a consultation to view details.
-                </div>
-              ) : (
-                <div className="space-y-6">
-                  <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
-                    <div>
-                      <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[var(--teal)]">
-                        {selectedRequest.reference}
-                      </p>
-                      <h2 className="mt-3 text-4xl">{selectedRequest.fullName}</h2>
-                      <p className="mt-3 text-sm text-[var(--text-soft)]">
-                        Submitted {formatDate(selectedRequest.createdAt?.seconds)}
-                      </p>
-                    </div>
-
-                    <div className="w-full max-w-xs">
-                      <label
-                        htmlFor="status"
-                        className="mb-2 block text-sm font-medium text-[var(--text-soft)]"
-                      >
-                        Restoration stage
-                      </label>
-                      <select
-                        id="status"
-                        value={selectedRequest.status}
-                        disabled={updatingId === selectedRequest.id}
-                        onChange={(e) =>
-                          handleStatusChange(
-                            selectedRequest.id,
-                            e.target.value as QuoteRequest["status"]
-                          )
-                        }
-                        className="brand-select"
-                      >
-                        {statusOptions.map((status) => (
-                          <option key={status} value={status}>
-                            {statusLabels[status]}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
+            <div className="site-card">
+              <div className="site-card-body">
+                {!selectedRequest ? (
+                  <div className="text-sm text-[var(--text-soft)]">
+                    Select a request to view details.
                   </div>
+                ) : (
+                  <div className="space-y-6">
+                    <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
+                      <div>
+                        <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[var(--primary)]">
+                          {selectedRequest.reference}
+                        </p>
+                        <h2 className="mt-3 text-4xl">{selectedRequest.fullName}</h2>
+                        <p className="mt-3 text-sm text-[var(--text-soft)]">
+                          Submitted {formatDate(selectedRequest.createdAt?.seconds)}
+                        </p>
+                      </div>
 
-                  <div className="grid gap-4 md:grid-cols-2">
-                    <div className="brand-panel-soft p-4">
-                      <p className="text-xs uppercase tracking-[0.18em] text-[var(--text-muted)]">
-                        Email
-                      </p>
-                      <p className="mt-2 text-sm text-[var(--text)]">
-                        {selectedRequest.email}
-                      </p>
+                      <div className="w-full max-w-xs">
+                        <label
+                          htmlFor="status"
+                          className="mb-2 block text-sm font-medium text-[var(--text-soft)]"
+                        >
+                          Status
+                        </label>
+                        <select
+                          id="status"
+                          value={selectedRequest.status}
+                          disabled={updatingId === selectedRequest.id}
+                          onChange={(e) =>
+                            handleStatusChange(
+                              selectedRequest.id,
+                              e.target.value as QuoteRequest["status"]
+                            )
+                          }
+                          className="site-select"
+                        >
+                          {statusOptions.map((status) => (
+                            <option key={status} value={status}>
+                              {statusLabels[status]}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
                     </div>
 
-                    <div className="brand-panel-soft p-4">
-                      <p className="text-xs uppercase tracking-[0.18em] text-[var(--text-muted)]">
-                        Phone
-                      </p>
-                      <p className="mt-2 text-sm text-[var(--text)]">
-                        {selectedRequest.phone}
-                      </p>
+                    <div className="grid gap-4 md:grid-cols-2">
+                      <div className="site-card-soft p-4">
+                        <p className="text-xs uppercase tracking-[0.18em] text-[var(--text-muted)]">
+                          Email
+                        </p>
+                        <p className="mt-2 text-sm text-[var(--text)]">
+                          {selectedRequest.email}
+                        </p>
+                      </div>
+
+                      <div className="site-card-soft p-4">
+                        <p className="text-xs uppercase tracking-[0.18em] text-[var(--text-muted)]">
+                          Phone
+                        </p>
+                        <p className="mt-2 text-sm text-[var(--text)]">
+                          {selectedRequest.phone}
+                        </p>
+                      </div>
+
+                      <div className="site-card-soft p-4">
+                        <p className="text-xs uppercase tracking-[0.18em] text-[var(--text-muted)]">
+                          Location
+                        </p>
+                        <p className="mt-2 text-sm text-[var(--text)]">
+                          {selectedRequest.location || "Not provided"}
+                        </p>
+                      </div>
+
+                      <div className="site-card-soft p-4">
+                        <p className="text-xs uppercase tracking-[0.18em] text-[var(--text-muted)]">
+                          Service
+                        </p>
+                        <p className="mt-2 text-sm text-[var(--text)]">
+                          {selectedRequest.serviceType}
+                        </p>
+                      </div>
                     </div>
 
-                    <div className="brand-panel-soft p-4">
-                      <p className="text-xs uppercase tracking-[0.18em] text-[var(--text-muted)]">
-                        Service needed
-                      </p>
-                      <p className="mt-2 text-sm text-[var(--text)]">
-                        {selectedRequest.serviceType}
-                      </p>
-                    </div>
-
-                    <div className="brand-panel-soft p-4">
+                    <div className="site-card-soft p-4">
                       <p className="text-xs uppercase tracking-[0.18em] text-[var(--text-muted)]">
                         Equipment type
                       </p>
@@ -433,47 +449,47 @@ export default function AdminPage() {
                         {selectedRequest.itemType}
                       </p>
                     </div>
-                  </div>
 
-                  <div className="brand-panel-soft p-4">
-                    <p className="text-xs uppercase tracking-[0.18em] text-[var(--text-muted)]">
-                      Consultation notes
-                    </p>
-                    <p className="mt-2 text-sm leading-7 text-[var(--text)]">
-                      {selectedRequest.description}
-                    </p>
-                  </div>
+                    <div className="site-card-soft p-4">
+                      <p className="text-xs uppercase tracking-[0.18em] text-[var(--text-muted)]">
+                        Description
+                      </p>
+                      <p className="mt-2 text-sm leading-7 text-[var(--text)]">
+                        {selectedRequest.description}
+                      </p>
+                    </div>
 
-                  <div className="brand-panel-soft p-4">
-                    <p className="text-xs uppercase tracking-[0.18em] text-[var(--text-muted)]">
-                      Consent to contact
-                    </p>
-                    <p className="mt-2 text-sm text-[var(--text)]">
-                      {selectedRequest.consentToContact ? "Yes" : "No"}
-                    </p>
-                  </div>
+                    <div className="site-card-soft p-4">
+                      <p className="text-xs uppercase tracking-[0.18em] text-[var(--text-muted)]">
+                        Consent to contact
+                      </p>
+                      <p className="mt-2 text-sm text-[var(--text)]">
+                        {selectedRequest.consentToContact ? "Yes" : "No"}
+                      </p>
+                    </div>
 
-                  <div>
-                    <p className="mb-3 text-xs uppercase tracking-[0.18em] text-[var(--text-muted)]">
-                      Uploaded image
-                    </p>
+                    <div>
+                      <p className="mb-3 text-xs uppercase tracking-[0.18em] text-[var(--text-muted)]">
+                        Uploaded image
+                      </p>
 
-                    {selectedRequest.imageUrl ? (
-                      <div className="overflow-hidden rounded-2xl border border-white/10 bg-white p-4">
-                        <img
-                          src={selectedRequest.imageUrl}
-                          alt={`${selectedRequest.itemType} upload`}
-                          className="max-h-[460px] w-full object-contain"
-                        />
-                      </div>
-                    ) : (
-                      <div className="brand-panel-soft p-4 text-sm text-[var(--text-soft)]">
-                        No image uploaded.
-                      </div>
-                    )}
+                      {selectedRequest.imageUrl ? (
+                        <div className="overflow-hidden rounded-2xl border border-[var(--border)] bg-white p-4">
+                          <img
+                            src={selectedRequest.imageUrl}
+                            alt={`${selectedRequest.itemType} upload`}
+                            className="max-h-[460px] w-full object-contain"
+                          />
+                        </div>
+                      ) : (
+                        <div className="site-card-soft p-4 text-sm text-[var(--text-soft)]">
+                          No image uploaded.
+                        </div>
+                      )}
+                    </div>
                   </div>
-                </div>
-              )}
+                )}
+              </div>
             </div>
           </div>
         </div>

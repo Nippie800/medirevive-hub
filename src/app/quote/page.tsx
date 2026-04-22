@@ -22,7 +22,7 @@ const initialForm: FormData = {
   fullName: "",
   email: "",
   phone: "",
- location: "",
+  location: "",
   serviceType: "",
   itemType: "",
   description: "",
@@ -32,10 +32,15 @@ const initialForm: FormData = {
 export default function QuotePage() {
   const router = useRouter();
 
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [form, setForm] = useState<FormData>(initialForm);
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+
+  function closeMenu() {
+    setMobileMenuOpen(false);
+  }
 
   const selectedImageName = useMemo(
     () => selectedImage?.name ?? "No file selected",
@@ -103,6 +108,83 @@ export default function QuotePage() {
 
   return (
     <main className="site-shell">
+      <header className="site-header">
+        <div className="site-container flex items-center justify-between py-4">
+          <Link href="/" className="flex items-center gap-3" onClick={closeMenu}>
+            <img
+              src="/medirevive-logo.png"
+              alt="MediRevive"
+              className="h-10 w-auto"
+            />
+          </Link>
+
+          <nav className="hidden items-center gap-6 md:flex">
+            <Link href="/" className="text-sm font-medium text-[var(--text-soft)] hover:text-[var(--primary)]">
+              Home
+            </Link>
+            <Link href="/catalog" className="text-sm font-medium text-[var(--text-soft)] hover:text-[var(--primary)]">
+              Equipment
+            </Link>
+            <Link href="/quote" className="text-sm font-medium text-[var(--primary)]">
+              Get a Quote
+            </Link>
+            <Link href="/contact" className="text-sm font-medium text-[var(--text-soft)] hover:text-[var(--primary)]">
+              Contact
+            </Link>
+          </nav>
+
+          <div className="hidden md:block">
+            <Link href="/quote" className="site-button-primary">
+              Get a Quote
+            </Link>
+          </div>
+
+          <button
+            type="button"
+            aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
+            onClick={() => setMobileMenuOpen((prev) => !prev)}
+            className="flex h-11 w-11 items-center justify-center rounded-xl border border-[var(--border)] bg-white text-[var(--primary)] md:hidden"
+          >
+            <span className="relative block h-5 w-5">
+              <span
+                className={`absolute left-0 top-0 block h-0.5 w-5 bg-current transition-all duration-200 ${
+                  mobileMenuOpen ? "top-2 rotate-45" : ""
+                }`}
+              />
+              <span
+                className={`absolute left-0 top-2 block h-0.5 w-5 bg-current transition-all duration-200 ${
+                  mobileMenuOpen ? "opacity-0" : "opacity-100"
+                }`}
+              />
+              <span
+                className={`absolute left-0 top-4 block h-0.5 w-5 bg-current transition-all duration-200 ${
+                  mobileMenuOpen ? "top-2 -rotate-45" : ""
+                }`}
+              />
+            </span>
+          </button>
+        </div>
+
+        {mobileMenuOpen ? (
+          <div className="site-container pb-4 md:hidden">
+            <nav className="flex flex-col gap-3 rounded-2xl border border-[var(--border)] bg-white p-4 shadow-sm">
+              <Link href="/" onClick={closeMenu} className="rounded-xl px-4 py-3 text-sm font-medium text-[var(--text)] hover:bg-[var(--background-soft)]">
+                Home
+              </Link>
+              <Link href="/catalog" onClick={closeMenu} className="rounded-xl px-4 py-3 text-sm font-medium text-[var(--text)] hover:bg-[var(--background-soft)]">
+                Equipment
+              </Link>
+              <Link href="/quote" onClick={closeMenu} className="rounded-xl bg-[var(--background-soft)] px-4 py-3 text-sm font-medium text-[var(--primary)]">
+                Get a Quote
+              </Link>
+              <Link href="/contact" onClick={closeMenu} className="rounded-xl px-4 py-3 text-sm font-medium text-[var(--text)] hover:bg-[var(--background-soft)]">
+                Contact
+              </Link>
+            </nav>
+          </div>
+        ) : null}
+      </header>
+
       <section className="site-section">
         <div className="site-container grid gap-10 lg:grid-cols-[0.85fr_1.15fr]">
           <div>
