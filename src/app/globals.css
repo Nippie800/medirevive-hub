@@ -1,27 +1,25 @@
 @import "tailwindcss";
 
 :root {
-  --background: #0d1722;
-  --background-soft: #111f2c;
-  --panel: rgba(255, 255, 255, 0.04);
-  --panel-strong: rgba(255, 255, 255, 0.06);
-  --border: rgba(255, 255, 255, 0.1);
+  --background: #ffffff;
+  --background-soft: #f5f7fb;
+  --panel: #ffffff;
+  --panel-soft: #f8fafe;
+  --border: #d9e2ef;
 
-  --text: #f3efe7;
-  --text-soft: #9fb0c2;
-  --text-muted: #7f90a3;
+  --text: #13294b;
+  --text-soft: #4e6485;
+  --text-muted: #7f91ad;
 
-  --teal: #11c5a1;
-  --teal-soft: rgba(17, 197, 161, 0.12);
+  --primary: #183b78;
+  --primary-hover: #112e60;
+  --primary-soft: #eaf1fb;
 
-  --linen: #d8c09a;
-  --linen-soft: #f2e6d6;
+  --success: #1e8b53;
+  --danger: #c94949;
 
-  --danger: #ff6b6b;
-  --success: #18c38f;
-
-  --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.28);
-  --shadow-md: 0 12px 30px rgba(0, 0, 0, 0.22);
+  --shadow-sm: 0 10px 30px rgba(18, 41, 75, 0.06);
+  --shadow-md: 0 18px 40px rgba(18, 41, 75, 0.08);
 }
 
 * {
@@ -34,10 +32,7 @@ html {
 
 body {
   margin: 0;
-  background:
-    linear-gradient(to right, rgba(255,255,255,0.04) 1px, transparent 1px),
-    linear-gradient(180deg, #0b1520 0%, #0d1722 100%);
-  background-size: 340px 100%, 100% 100%;
+  background: linear-gradient(180deg, #ffffff 0%, #f7f9fc 100%);
   color: var(--text);
   font-family: var(--font-sans), Arial, Helvetica, sans-serif;
 }
@@ -48,8 +43,10 @@ h3,
 h4,
 h5,
 h6 {
-  font-family: var(--font-serif), Georgia, serif;
+  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+  font-weight: 700;
   letter-spacing: -0.03em;
+  color: var(--text);
 }
 
 a {
@@ -65,236 +62,196 @@ select {
 }
 
 ::selection {
-  background: rgba(17, 197, 161, 0.25);
+  background: rgba(24, 59, 120, 0.15);
 }
 
-.brand-shell {
+.site-shell {
   min-height: 100vh;
-  color: var(--text);
+  background: transparent;
 }
 
-.brand-container {
+.site-container {
   width: 100%;
-  max-width: 1240px;
+  max-width: 1180px;
   margin: 0 auto;
-  padding-left: 24px;
-  padding-right: 24px;
+  padding-left: 20px;
+  padding-right: 20px;
 }
 
-.brand-section {
-  padding-top: 88px;
-  padding-bottom: 88px;
+.site-section {
+  padding-top: 72px;
+  padding-bottom: 72px;
 }
 
-.brand-kicker {
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  background: rgba(255, 255, 255, 0.88);
+  border-bottom: 1px solid rgba(217, 226, 239, 0.85);
+}
+
+.site-kicker {
   display: inline-flex;
   align-items: center;
   gap: 10px;
   font-size: 12px;
-  letter-spacing: 0.22em;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: var(--teal);
+  color: var(--primary);
+  font-weight: 700;
 }
 
-.brand-kicker::before {
+.site-kicker::before {
   content: "";
-  width: 22px;
-  height: 1px;
-  background: var(--teal);
+  width: 20px;
+  height: 2px;
+  background: var(--primary);
   display: inline-block;
+  border-radius: 999px;
 }
 
-.brand-title-xl {
-  font-size: clamp(3rem, 7vw, 5.8rem);
-  line-height: 0.96;
-  max-width: 8ch;
-}
-
-.brand-title-lg {
-  font-size: clamp(2.2rem, 5vw, 4rem);
+.site-title-xl {
+  font-size: clamp(2.7rem, 6vw, 4.8rem);
   line-height: 1.02;
-  max-width: 11ch;
+  max-width: 10ch;
 }
 
-.brand-body {
-  font-size: 1.125rem;
-  line-height: 1.8;
+.site-title-lg {
+  font-size: clamp(2rem, 4vw, 3.4rem);
+  line-height: 1.05;
+  max-width: 13ch;
+}
+
+.site-body {
+  font-size: 1.06rem;
+  line-height: 1.85;
   color: var(--text-soft);
-  max-width: 680px;
+  max-width: 760px;
 }
 
-.brand-panel {
-  background: linear-gradient(
-    180deg,
-    rgba(255,255,255,0.05) 0%,
-    rgba(255,255,255,0.03) 100%
-  );
+.site-card {
   border: 1px solid var(--border);
-  border-radius: 24px;
-  box-shadow: var(--shadow-md);
-  -webkit-backdrop-filter: blur(8px);
-backdrop-filter: blur(8px);
+  border-radius: 22px;
+  background: var(--panel);
+  box-shadow: var(--shadow-sm);
 }
 
-.brand-panel-soft {
-  background: rgba(255, 255, 255, 0.03);
+.site-card-soft {
   border: 1px solid var(--border);
-  border-radius: 20px;
+  border-radius: 18px;
+  background: var(--panel-soft);
 }
 
-.brand-button-primary {
+.site-card-body {
+  padding: 24px;
+}
+
+.site-button-primary {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: 52px;
-  padding: 0 22px;
+  min-height: 50px;
+  padding: 0 20px;
   border-radius: 14px;
-  background: var(--teal-soft);
-  border: 1px solid rgba(17, 197, 161, 0.28);
-  color: var(--teal);
+  background: var(--primary);
+  color: #ffffff;
   font-weight: 600;
   transition: 160ms ease;
 }
 
-.brand-button-primary:hover {
-  transform: translateY(-1px);
-  background: rgba(17, 197, 161, 0.18);
+.site-button-primary:hover {
+  background: var(--primary-hover);
 }
 
-.brand-button-secondary {
+.site-button-secondary {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: 52px;
-  padding: 0 22px;
+  min-height: 50px;
+  padding: 0 20px;
   border-radius: 14px;
-  background: transparent;
   border: 1px solid var(--border);
+  background: #ffffff;
   color: var(--text);
   font-weight: 600;
   transition: 160ms ease;
 }
 
-.brand-button-secondary:hover {
-  background: rgba(255, 255, 255, 0.05);
+.site-button-secondary:hover {
+  background: var(--background-soft);
 }
 
-.brand-card {
-  overflow: hidden;
-  border-radius: 22px;
-  border: 1px solid var(--border);
-  background: linear-gradient(
-    180deg,
-    rgba(255,255,255,0.04) 0%,
-    rgba(255,255,255,0.02) 100%
-  );
-}
-
-.brand-card-visual {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 220px;
-  padding: 28px;
-  border-bottom: 1px solid var(--border);
-  background: linear-gradient(
-    90deg,
-    rgba(17,197,161,0.08) 0%,
-    rgba(255,255,255,0.03) 100%
-  );
-}
-
-.brand-card-body {
-  padding: 22px;
-}
-
-.brand-badge {
+.site-badge {
   display: inline-flex;
   align-items: center;
-  min-height: 32px;
-  padding: 0 14px;
+  min-height: 30px;
+  padding: 0 12px;
   border-radius: 999px;
+  background: var(--primary-soft);
+  color: var(--primary);
   font-size: 12px;
+  font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  border: 1px solid rgba(17, 197, 161, 0.28);
-  color: var(--teal);
-  background: rgba(17, 197, 161, 0.08);
 }
 
-.brand-badge-warm {
-  border: 1px solid rgba(216, 192, 154, 0.3);
-  color: var(--linen);
-  background: rgba(216, 192, 154, 0.08);
-}
-
-.brand-stat {
-  padding: 22px;
-  border-radius: 18px;
-  border: 1px solid var(--border);
-  background: rgba(255, 255, 255, 0.03);
-}
-
-.brand-stat-number {
-  font-family: var(--font-serif), Georgia, serif;
-  font-size: 2rem;
-  line-height: 1;
-}
-
-.brand-input,
-.brand-textarea,
-.brand-select {
+.site-input,
+.site-select,
+.site-textarea {
   width: 100%;
-  border-radius: 16px;
+  border-radius: 14px;
   border: 1px solid var(--border);
-  background: rgba(255,255,255,0.03);
+  background: #ffffff;
   color: var(--text);
-  padding: 15px 16px;
+  padding: 14px 15px;
   outline: none;
   transition: 160ms ease;
 }
 
-.brand-input::placeholder,
-.brand-textarea::placeholder {
+.site-input::placeholder,
+.site-textarea::placeholder {
   color: var(--text-muted);
 }
 
-.brand-input:focus,
-.brand-textarea:focus,
-.brand-select:focus {
-  border-color: rgba(17, 197, 161, 0.5);
-  box-shadow: 0 0 0 3px rgba(17, 197, 161, 0.12);
+.site-input:focus,
+.site-select:focus,
+.site-textarea:focus {
+  border-color: rgba(24, 59, 120, 0.45);
+  box-shadow: 0 0 0 3px rgba(24, 59, 120, 0.1);
 }
 
-.brand-divider {
-  height: 1px;
+.site-divider {
   width: 100%;
+  height: 1px;
   background: var(--border);
 }
 
-.brand-mobile-frame {
-  border-radius: 36px;
-  overflow: hidden;
-  border: 12px solid #0c1117;
-  box-shadow: 0 30px 80px rgba(0,0,0,0.35);
-  background: #0c1117;
+.site-stat {
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  background: #ffffff;
+  padding: 22px;
+  box-shadow: var(--shadow-sm);
+}
+
+.site-stat-number {
+  font-size: 2rem;
+  line-height: 1;
+  font-weight: 700;
+  color: var(--primary);
 }
 
 @media (max-width: 768px) {
-  body {
-    background-size: 180px 100%, 100% 100%;
+  .site-section {
+    padding-top: 56px;
+    padding-bottom: 56px;
   }
 
-  .brand-section {
-    padding-top: 64px;
-    padding-bottom: 64px;
-  }
-
-  .brand-title-xl {
-    max-width: 9ch;
-  }
-
-  .brand-title-lg {
-    max-width: 12ch;
+  .site-title-xl,
+  .site-title-lg {
+    max-width: none;
   }
 }

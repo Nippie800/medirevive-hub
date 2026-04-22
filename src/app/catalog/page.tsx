@@ -5,8 +5,8 @@ import { useMemo, useState } from "react";
 
 type EquipmentCategory =
   | "All"
-  | "Plinths & Beds"
-  | "Chairs & Seating"
+  | "Beds & Plinths"
+  | "Chairs & Stools"
   | "Professional Furniture"
   | "Accessories"
   | "Custom";
@@ -16,13 +16,12 @@ type EquipmentItem = {
   description: string;
   category: EquipmentCategory;
   image: string;
-  tag: string;
 };
 
 const categories: EquipmentCategory[] = [
   "All",
-  "Plinths & Beds",
-  "Chairs & Seating",
+  "Beds & Plinths",
+  "Chairs & Stools",
   "Professional Furniture",
   "Accessories",
   "Custom",
@@ -33,49 +32,43 @@ const equipmentItems: EquipmentItem[] = [
     title: "Treatment Beds & Plinths",
     description:
       "Electrical plinths, standard plinths, bobath plinths, portable plinths, chiropractic beds, and traction beds.",
-    category: "Plinths & Beds",
+    category: "Beds & Plinths",
     image: "/catalog/hospital-bed.png",
-    tag: "Core category",
   },
   {
     title: "Treatment Chairs",
     description:
-      "Professional reupholstery and restoration for treatment chairs, therapy chairs, and specialist seating.",
-    category: "Chairs & Seating",
+      "Reupholstery and restoration for treatment chairs, therapy chairs, and specialist seating.",
+    category: "Chairs & Stools",
     image: "/catalog/treatment-chair.png",
-    tag: "Professional use",
   },
   {
-    title: "Wheelchairs & Mobility Seating",
+    title: "Mobility Seating",
     description:
-      "Seat, cushion, and support restoration where required for comfort, hygiene, and a cleaner finish.",
-    category: "Chairs & Seating",
+      "Assessment-based restoration for selected mobility and support seating items.",
+    category: "Chairs & Stools",
     image: "/catalog/wheelchair.png",
-    tag: "Assessment needed",
   },
   {
     title: "Round & Saddle Stools",
     description:
-      "Round stools, saddle chairs, and other support seating reupholstered for durability and professional presentation.",
-    category: "Chairs & Seating",
+      "Support seating restored for durability, hygiene, and a cleaner finish.",
+    category: "Chairs & Stools",
     image: "/catalog/medical-stool.png",
-    tag: "Workshop repair",
   },
   {
-    title: "Examination & Consultation Furniture",
+    title: "Consultation & Examination Furniture",
     description:
-      "Examination tables, consultation furniture, office chairs, reception seating, and related professional-use furniture.",
+      "Examination tables, office chairs, reception seating, and professional-use furniture.",
     category: "Professional Furniture",
     image: "/catalog/exam-table.png",
-    tag: "Professional spaces",
   },
   {
-    title: "Custom Accessories & Bespoke Items",
+    title: "Custom Accessories",
     description:
-      "Plinth covers, pillowcases, PVC bed covers, stool covers, chair covers, custom scrubs, Mulligan NAGS & SNAGS belts, and tailored accessory solutions.",
+      "Plinth covers, pillowcases, PVC bed covers, stool covers, and bespoke add-ons.",
     category: "Accessories",
     image: "/catalog/custom-equipment.png",
-    tag: "Custom made",
   },
 ];
 
@@ -88,53 +81,18 @@ export default function EquipmentPage() {
   }, [activeCategory]);
 
   return (
-    <main className="brand-shell">
-      <section className="brand-container pt-6">
-        <header className="flex items-center justify-between rounded-2xl border border-white/10 bg-white/5 px-4 py-4 md:px-6">
-          <Link href="/" className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-[#11c5a147] bg-[#11c5a112] text-[#11c5a1]">
-              +
-            </div>
-            <span className="text-lg text-[var(--text)]">
-              <span className="font-medium">Medi</span>
-              <span className="text-[#11c5a1]">Revive</span>
-            </span>
-          </Link>
-
-          <nav className="hidden items-center gap-3 md:flex">
-            <Link href="/" className="text-sm text-[var(--text-soft)] transition hover:text-white">
-              Home
-            </Link>
-            <Link href="/quote" className="text-sm text-[var(--text-soft)] transition hover:text-white">
-              Consultation
-            </Link>
-            <Link href="/contact" className="text-sm text-[var(--text-soft)] transition hover:text-white">
-              Contact
-            </Link>
-            <Link href="/admin" className="brand-button-primary">
-              Dashboard
-            </Link>
-          </nav>
-
-          <div className="md:hidden">
-            <Link href="/quote" className="brand-button-primary text-sm">
-              Quote
-            </Link>
-          </div>
-        </header>
-      </section>
-
-      <section className="brand-section">
-        <div className="brand-container">
+    <main className="site-shell">
+      <section className="site-section">
+        <div className="site-container">
           <div className="max-w-3xl">
-            <span className="brand-kicker">Equipment we work with</span>
-            <h1 className="brand-title-lg mt-5">
-              Quote-only restoration for treatment, clinical, and professional furniture.
+            <span className="site-kicker">Equipment we work with</span>
+            <h1 className="site-title-lg mt-5">
+              Clear categories. Quote-only service.
             </h1>
-            <p className="brand-body mt-6">
-              This page shows the types of equipment and professional-use items
-              MediRevive typically restores, reupholsters, repairs, or manufactures
-              accessories for. Custom items are also accepted for assessment.
+            <p className="site-body mt-6">
+              MediRevive does not sell standard products through the site. This page
+              shows the types of equipment and professional-use items we typically
+              restore, repair, or reupholster.
             </p>
           </div>
 
@@ -149,8 +107,8 @@ export default function EquipmentPage() {
                   onClick={() => setActiveCategory(category)}
                   className={
                     isActive
-                      ? "brand-button-primary min-h-0 px-4 py-2 text-sm"
-                      : "rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm font-medium text-[var(--text-soft)] transition hover:bg-white/10 hover:text-white"
+                      ? "site-button-primary min-h-0 px-4 py-2 text-sm"
+                      : "rounded-full border border-[var(--border)] bg-white px-4 py-2 text-sm font-medium text-[var(--text-soft)] hover:bg-[var(--background-soft)]"
                   }
                 >
                   {category}
@@ -161,9 +119,9 @@ export default function EquipmentPage() {
 
           <div className="mt-12 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
             {filteredItems.map((item) => (
-              <div key={item.title} className="brand-card">
-                <div className="h-72 w-full p-4">
-                  <div className="flex h-full w-full items-center justify-center rounded-2xl border border-white/10 bg-white">
+              <div key={item.title} className="site-card overflow-hidden">
+                <div className="h-72 w-full bg-[var(--background-soft)] p-4">
+                  <div className="flex h-full w-full items-center justify-center rounded-2xl border border-[var(--border)] bg-white">
                     <img
                       src={item.image}
                       alt={item.title}
@@ -172,25 +130,15 @@ export default function EquipmentPage() {
                   </div>
                 </div>
 
-                <div className="brand-card-body">
-                  <div className="flex items-center justify-between gap-3">
-                    <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--teal)]">
-                      {item.category}
-                    </p>
-                    <span className="text-xs uppercase tracking-[0.14em] text-[var(--text-muted)]">
-                      {item.tag}
-                    </span>
-                  </div>
-
-                  <h2 className="mt-3 text-2xl text-[var(--text)]">{item.title}</h2>
-                  <p className="mt-3 leading-8 text-[var(--text-soft)]">
+                <div className="site-card-body">
+                  <span className="site-badge">{item.category}</span>
+                  <h2 className="mt-4 text-2xl">{item.title}</h2>
+                  <p className="mt-4 leading-8 text-[var(--text-soft)]">
                     {item.description}
                   </p>
-
-                  <div className="mt-6 flex items-center justify-between gap-3">
-                    <span className="brand-badge">Quote only</span>
-                    <Link href="/quote" className="text-sm font-medium text-[var(--teal)]">
-                      Request quote →
+                  <div className="mt-6">
+                    <Link href="/quote" className="site-button-secondary">
+                      Request a Quote
                     </Link>
                   </div>
                 </div>
@@ -198,21 +146,20 @@ export default function EquipmentPage() {
             ))}
           </div>
 
-          <div className="brand-panel mt-12 p-8 md:p-10">
-            <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
-              <div className="max-w-2xl">
-                <span className="brand-kicker">Custom items accepted</span>
-                <h2 className="mt-5 text-4xl">Not listed above?</h2>
-                <p className="mt-4 leading-8 text-[var(--text-soft)]">
-                  MediRevive also handles bespoke solutions. If your treatment,
-                  clinical, wellness, salon, or professional-use item is not shown
-                  here, you can still send photos and details for assessment.
-                </p>
-              </div>
+          <div className="site-card mt-12">
+            <div className="site-card-body">
+              <span className="site-kicker">Custom items accepted</span>
+              <h2 className="mt-5 text-4xl">Not listed here?</h2>
+              <p className="mt-4 max-w-2xl leading-8 text-[var(--text-soft)]">
+                If your item is not shown above, you can still send details and photos
+                for assessment. MediRevive also handles bespoke and custom solutions.
+              </p>
 
-              <Link href="/quote" className="brand-button-primary">
-                Start consultation →
-              </Link>
+              <div className="mt-6">
+                <Link href="/quote" className="site-button-primary">
+                  Start a Quote Request
+                </Link>
+              </div>
             </div>
           </div>
         </div>
