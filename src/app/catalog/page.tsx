@@ -93,7 +93,7 @@ export default function EquipmentPage() {
             <img
               src="/medirevive-logo.png"
               alt="MediRevive"
-              className="h-10 w-auto"
+              className="h-35 w-auto"
             />
           </Link>
 

@@ -18,7 +18,7 @@ export default function ContactPage() {
             <img
               src="/medirevive-logo.png"
               alt="MediRevive"
-              className="h-10 w-auto"
+              className="h-35 w-auto"
             />
           </Link>
 
@@ -119,7 +119,7 @@ export default function ContactPage() {
                   Phone
                 </p>
                 <p className="mt-3 text-2xl text-[var(--text)]">
-                  Replace with phone number
+                  +27 66 272 8667
                 </p>
               </div>
             </div>
@@ -130,7 +130,7 @@ export default function ContactPage() {
                   Email
                 </p>
                 <p className="mt-3 text-2xl text-[var(--text)]">
-                  Replace with email address
+                  info@medi-revive.co.za
                 </p>
               </div>
             </div>
