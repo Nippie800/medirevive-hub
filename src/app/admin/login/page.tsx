@@ -75,7 +75,7 @@ export default function AdminLoginPage() {
                   <img
                     src="/medirevive-logo.png"
                     alt="MediRevive"
-                    className="h-11 w-auto"
+                    className="h-27 w-auto"
                   />
                   <h2 className="mt-6 text-3xl">Admin login</h2>
                   <p className="mt-3 leading-8 text-[var(--text-soft)]">

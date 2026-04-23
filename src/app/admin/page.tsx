@@ -212,7 +212,7 @@ export default function AdminPage() {
             <img
               src="/medirevive-logo.png"
               alt="MediRevive"
-              className="h-10 w-auto"
+              className="h-35 w-auto"
             />
             <div>
               <p className="text-sm font-semibold text-[var(--primary)]">Admin Dashboard</p>
