@@ -249,13 +249,13 @@ export default function HomePage() {
                   <p className="text-xs uppercase tracking-[0.18em] text-[var(--text-muted)]">
                     Phone
                   </p>
-                  <p className="mt-2 text-[var(--text)]">Replace with phone number</p>
+                  <p className="mt-2 text-[var(--text)]">+27 66 272 8667</p>
                 </div>
                 <div>
                   <p className="text-xs uppercase tracking-[0.18em] text-[var(--text-muted)]">
                     Email
                   </p>
-                  <p className="mt-2 text-[var(--text)]">Replace with email address</p>
+                  <p className="mt-2 text-[var(--text)]">info@medi-revive.co.za</p>
                 </div>
                 <div>
                   <p className="text-xs uppercase tracking-[0.18em] text-[var(--text-muted)]">
