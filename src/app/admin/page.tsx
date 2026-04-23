@@ -229,12 +229,9 @@ export default function AdminPage() {
             <button type="button" onClick={handleLogout} className="site-button-primary">
               Log Out
             </button>
-            <button
-  onClick={() => setShowModal(true)}
-  className="site-button-primary"
->
+          <Link href="/admin/add" className="site-button-primary">
   + Add Enquiry
-</button>
+</Link>
           </div>
         </div>
       </header>
