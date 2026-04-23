@@ -156,7 +156,7 @@ export default function ContactPage() {
                 </p>
 
                 <div className="mt-6 flex flex-col gap-4 sm:flex-row">
-                  <a
+ <a
   href="https://wa.me/27662728667?text=Hi%20MediRevive,%20I%20would%20like%20to%20request%20a%20quote."
   target="_blank"
   rel="noopener noreferrer"

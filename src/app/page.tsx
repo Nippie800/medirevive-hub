@@ -229,13 +229,14 @@ export default function HomePage() {
 
                 <div className="flex flex-col gap-4 sm:flex-row">
                   <a
-                    href="https://wa.me/270000000000"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="site-button-primary"
-                  >
-                    WhatsApp Us
-                  </a>
+  href="https://wa.me/27662728667?text=Hi%20MediRevive,%20I%20would%20like%20to%20request%20a%20quote."
+  target="_blank"
+  rel="noopener noreferrer"
+  className="site-button-primary"
+>
+  WhatsApps Us
+</a>
+         
                   <Link href="/contact" className="site-button-secondary">
                     Contact Details
                   </Link>
