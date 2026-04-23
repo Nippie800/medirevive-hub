@@ -13,6 +13,7 @@ import {
 import { onAuthStateChanged, signOut, User } from "firebase/auth";
 import { useRouter } from "next/navigation";
 import { auth, db } from "../../lib/firebase";
+import AddEnquiryModal from "../../components/AddEnquiryModal";
 
 type QuoteRequest = {
   id: string;
@@ -59,6 +60,7 @@ export default function AdminPage() {
   const [loading, setLoading] = useState(true);
   const [updatingId, setUpdatingId] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState("");
+  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
@@ -227,6 +229,12 @@ export default function AdminPage() {
             <button type="button" onClick={handleLogout} className="site-button-primary">
               Log Out
             </button>
+            <button
+  onClick={() => setShowModal(true)}
+  className="site-button-primary"
+>
+  + Add Enquiry
+</button>
           </div>
         </div>
       </header>
