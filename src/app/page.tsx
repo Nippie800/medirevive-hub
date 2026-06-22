@@ -62,9 +62,148 @@ export default function HomePage() {
             <Link href="/" className="text-sm font-medium text-[var(--text-soft)] hover:text-[var(--primary)]">
               Home
             </Link>
-            <Link href="/catalog" className="text-sm font-medium text-[var(--text-soft)] hover:text-[var(--primary)]">
-              Equipment
-            </Link>
+            <div className="relative group">
+  <button className="flex items-center gap-2 text-sm font-medium text-[var(--text-soft)] hover:text-[var(--primary)]">
+
+    Services
+
+    <span className="transition group-hover:rotate-180">
+      ▼
+    </span>
+
+  </button>
+
+  <div className="
+  invisible
+  absolute
+  left-1/2
+  top-full
+  z-50
+  mt-4
+  w-[980px]
+  -translate-x-1/2
+  rounded-3xl
+  border
+  border-[var(--border)]
+  bg-white
+  p-8
+  text-left
+  shadow-2xl
+  opacity-0
+  transition-all
+  duration-200
+  group-hover:visible
+  group-hover:opacity-100
+">
+
+    {/* CONTENT GOES HERE */}
+<div className="grid grid-cols-[1.35fr_0.9fr] gap-10">
+  <div className="grid grid-cols-3 gap-8">
+    <div>
+      <h4 className="text-sm font-bold text-[var(--text)]">
+        Examination Beds & Plinths
+      </h4>
+
+      <div className="mt-4 grid gap-3 text-sm text-[var(--text-soft)]">
+        <Link href="/catalog">Electrical Plinths</Link>
+        <Link href="/catalog">Standard Plinths</Link>
+        <Link href="/catalog">Bobath Plinths</Link>
+        <Link href="/catalog">Portable Plinths</Link>
+        <Link href="/catalog">Chiropractic Beds</Link>
+        <Link href="/catalog">Traction Beds</Link>
+      </div>
+    </div>
+
+    <div>
+      <h4 className="text-sm font-bold text-[var(--text)]">Medical Seating</h4>
+
+      <div className="mt-4 grid gap-3 text-sm text-[var(--text-soft)]">
+        <Link href="/catalog">Round Stools</Link>
+        <Link href="/catalog">Saddle Chairs</Link>
+        <Link href="/catalog">Office Chairs</Link>
+      </div>
+
+      <h4 className="mt-8 text-sm font-bold text-[var(--text)]">
+        Privacy Curtains & Screens
+      </h4>
+
+      <div className="mt-4 grid gap-3 text-sm text-[var(--text-soft)]">
+        <Link href="/catalog">Privacy Curtains</Link>
+        <Link href="/catalog">Medical Screens</Link>
+      </div>
+    </div>
+
+    <div>
+      <h4 className="text-sm font-bold text-[var(--text)]">
+        Office & Reception Furniture
+      </h4>
+
+      <div className="mt-4 grid gap-3 text-sm text-[var(--text-soft)]">
+        <Link href="/catalog">Reception Seating</Link>
+        <Link href="/catalog">Office Chairs</Link>
+        <Link href="/catalog">Consultation Furniture</Link>
+      </div>
+
+      <h4 className="mt-8 text-sm font-bold text-[var(--text)]">
+        Custom Projects
+      </h4>
+
+      <div className="mt-4 grid gap-3 text-sm text-[var(--text-soft)]">
+        <Link href="/catalog">PVC Bed Covers</Link>
+        <Link href="/catalog">Saddle Chair Covers</Link>
+        <Link href="/catalog">Pillowcases</Link>
+        <Link href="/catalog">Scrubs</Link>
+        <Link href="/catalog">Mulligan Belts</Link>
+        <Link href="/catalog">Custom Upholstery</Link>
+      </div>
+    </div>
+  </div>
+
+  <Link href="/catalog" className="group block">
+    <div className="
+bg-white
+rounded-3xl
+overflow-hidden
+border
+border-[var(--border)]
+p-6
+">
+      <img
+  src="/catalog/featured-bed.jpg"
+  alt="Restored treatment bed"
+  className="
+    h-80
+    w-full
+    object-contain
+    p-2
+    transition
+    duration-300
+    group-hover:scale-105
+  "
+/>
+    </div>
+
+    <p className="mt-4 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--text-muted)]">
+      Featured restoration
+    </p>
+
+    <h4 className="mt-2 text-lg font-bold text-[var(--text)]">
+      Treatment & Examination Beds
+    </h4>
+
+    <p className="mt-2 text-sm leading-6 text-[var(--text-soft)]">
+      Explore restored plinths, examination beds, seating, curtains and custom
+      clinical upholstery work.
+    </p>
+
+    <p className="mt-4 text-sm font-semibold text-[var(--primary)]">
+      Explore services →
+    </p>
+  </Link>
+</div>
+  </div>
+
+</div>
             <Link href="/quote" className="text-sm font-medium text-[var(--text-soft)] hover:text-[var(--primary)]">
               Get a Quote
             </Link>
