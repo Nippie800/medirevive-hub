@@ -127,27 +127,47 @@ export default function HomePage() {
 
       <section className="site-section">
         <div className="site-container">
-          <div className="grid gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
+          <div className="grid gap-14 lg:grid-cols-[1.15fr_0.85fr] lg:items-center">
             <div>
-              <span className="site-kicker">Treatment & professional furniture restoration</span>
-              <h1 className="site-title-xl mt-5">
-                Restore. Repair. Reupholster.
-              </h1>
-              <p className="site-body mt-6">
-                MediRevive specialises in treatment, clinical, wellness, and
-                professional-use furniture restoration — helping extend the life of
-                equipment while maintaining a clean, durable, professional finish.
-              </p>
+  <span className="site-kicker">
+    HEALTHCARE • WELLNESS • COMMERCIAL FURNITURE RESTORATION
+  </span>
 
-              <div className="mt-8 flex flex-col gap-4 sm:flex-row">
-                <Link href="/quote" className="site-button-primary">
-                  Get a Quote
-                </Link>
-                <Link href="/catalog" className="site-button-secondary">
-                  View Services
-                </Link>
-              </div>
-            </div>
+  <h1 className="site-title-lg mt-6 max-w-[11ch]">
+    Restore.
+    <br />
+
+    Renew.
+    <br />
+
+    Extend Equipment Life.
+  </h1>
+
+  <p className="site-body mt-8">
+    We specialise in the reupholstery and restoration of medical,
+    physiotherapy, wellness, and professional-use furniture.
+  </p>
+
+  <p className="site-body mt-5">
+    From treatment plinths and examination beds to waiting room seating
+    and privacy curtains, using durable, hygienic materials and a wide
+    range of custom colour options, we help facilities avoid costly
+    replacements.
+  </p>
+
+  <div className="mt-10 flex flex-col gap-4 sm:flex-row">
+    <Link href="/quote" className="site-button-primary">
+      Request a Quote
+    </Link>
+
+    <a
+      href="#services"
+      className="site-button-secondary"
+    >
+      Explore Our Services
+    </a>
+  </div>
+</div>
 
             <div className="grid gap-4 sm:grid-cols-3 lg:grid-cols-1">
               <div className="site-stat">
@@ -167,7 +187,10 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="site-section pt-0">
+      <section
+  id="services"
+  className="site-section pt-0"
+>
         <div className="site-container">
           <span className="site-kicker">What we do</span>
           <h2 className="site-title-lg mt-5">Professional restoration services made simple.</h2>
