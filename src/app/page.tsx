@@ -49,19 +49,47 @@ export default function HomePage() {
   return (
     <main className="site-shell">
       <header className="site-header">
-        <div className="site-container flex items-center justify-between py-4">
-          <Link href="/" className="flex items-center gap-3" onClick={closeMenu}>
-            <img
-              src="/medirevive-logo.png"
-              alt="MediRevive"
-              className="h-35 w-auto"
-            />
-          </Link>
+       <div className="site-container flex items-center justify-between py-6">
+          <Link
+  href="/"
+  onClick={closeMenu}
+  className="flex flex-col items-start"
+>
+ <img
+  src="/medirevive-logo.jpg"
+  alt="MediRevive"
+  className="h-16 md:h-20 w-auto"
+/>
 
-          <nav className="hidden items-center gap-6 md:flex">
-            <Link href="/" className="text-sm font-medium text-[var(--text-soft)] hover:text-[var(--primary)]">
-              Home
-            </Link>
+  <span
+    className="
+      mt-1
+      text-[9px]
+      md:text-[10px]
+      uppercase
+      tracking-[0.25em]
+      text-[var(--text-muted)]
+      whitespace-nowrap
+    "
+  >
+    Medical • Wellness • Commercial Furniture Restoration
+  </span>
+</Link>
+
+          <nav className="hidden md:flex items-center gap-8">
+
+  <Link
+    href="/"
+    className="
+      text-sm
+      font-medium
+      text-[var(--text-soft)]
+      hover:text-[var(--primary)]
+      transition-colors
+    "
+  >
+    Home
+  </Link>
             <div className="relative group">
   <button className="flex items-center gap-2 text-sm font-medium text-[var(--text-soft)] hover:text-[var(--primary)]">
 
@@ -204,12 +232,33 @@ p-6
   </div>
 
 </div>
+<Link
+    href="/gallery"
+    className="
+      text-sm
+      font-medium
+      text-[var(--text-soft)]
+      hover:text-[var(--primary)]
+      transition-colors
+    "
+  >
+    Gallery
+  </Link>
             <Link href="/quote" className="text-sm font-medium text-[var(--text-soft)] hover:text-[var(--primary)]">
-              Get a Quote
+              Request Quote
             </Link>
-            <Link href="/contact" className="text-sm font-medium text-[var(--text-soft)] hover:text-[var(--primary)]">
-              Contact
-            </Link>
+              <Link
+    href="/contact"
+    className="
+      text-sm
+      font-medium
+      text-[var(--text-soft)]
+      hover:text-[var(--primary)]
+      transition-colors
+    "
+  >
+    Contact
+  </Link>
           </nav>
 
           <div className="hidden md:block">
