@@ -255,3 +255,50 @@ select {
     max-width: none;
   }
 }
+.mega-link{
+  font-size:.9rem;
+  color:var(--text-soft);
+  transition:.2s ease;
+}
+
+.mega-link:hover{
+  color:var(--primary);
+  transform:translateX(4px);
+}
+.mobile-link{
+  display:block;
+  border-radius:14px;
+  padding:14px 18px;
+  font-weight:600;
+  color:var(--text);
+  transition:.2s ease;
+}
+
+.mobile-link:hover{
+  background:var(--background-soft);
+  color:var(--primary);
+}
+
+.mobile-sub-link{
+  display:block;
+  border-left:3px solid var(--primary);
+  padding:10px 16px;
+  font-size:.9rem;
+  color:var(--text-soft);
+  transition:.2s ease;
+}
+
+.mobile-sub-link:hover{
+  background:var(--primary-soft);
+  color:var(--primary);
+}
+.footer-link{
+  color:var(--text-soft);
+  transition:.25s ease;
+  width:fit-content;
+}
+
+.footer-link:hover{
+  color:var(--primary);
+  transform:translateX(4px);
+}
